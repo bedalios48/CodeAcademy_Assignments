@@ -6,118 +6,45 @@
         {
             Console.WriteLine("Hello, World!");
 
-            // Ivedamos eilutes pradzios vertes
-            var pirmosEilutesPradzia = "1eil.    ";
-            var antrosEilutesPradzia = "2eil.    ";
-            var treciosEilutesPradzia = "3eil.    ";
-            var ketvirtosEilutesPradzia = "4eil.    ";
-            var penktosEilutesPradzia = "5eil.    ";
+            /*PARAŠYTI PROGRAMĄ KURIOJE SAUGOME :
+            • MOKYKLOS PAVADINIMĄ
+            • KURSO PAVADINIMĄ
+            • STUDENTŲ SKAIČIŲ
+            • ŠIANDIENOS DATĄ
+            • VISUS KINTAMUOSIUS IŠVESTI Į EKRANĄ*/
 
-            //Ivedamos bokstu konstrukcijos
-            var tuscias = "     |     ";
-            var vienas = "    #|#    ";
-            var du = "   ##|##   ";
-            var trys = "  ###|###  ";
-            var keturi = " ####|#### ";
-            var apacia = "\t----1stulp-------2stulp-------3stulp----";
+            string mokykla = "Code Academy";
+            string kursas = "CA .NET";
+            int studentuSkaicius = 19;
+            DateTime siandien = DateTime.Now;
 
-            // Pirma uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, vienas, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, du, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, trys, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, tuscias, tuscias);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            Console.WriteLine(mokykla);
+            Console.WriteLine(kursas);
+            Console.WriteLine(studentuSkaicius);
+            Console.WriteLine(siandien.ToString("yyyy-MM-dd"));
 
-            //Antra uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, keturi, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, trys, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, du, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, vienas, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            /*PAPILDYTI PROGRAMĄ IR PRIDĖTI:
+            • KURSO PRADŽIOS DATĄ
+            • KURSO PABAIGOS DATĄ
+            • Sužinoti skirtumą tarp pradžios ir dabartinės datos (dienomis)
+            • VISUS KINTAMUOSIUS IŠVESTI Į EKRANĄ*/
 
-            // Trecia uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            DateTime kursuPradzia = new DateTime(2022, 05, 30);
+            DateTime kursuPabaiga = new DateTime(2023, 01, 01);
+            var skirtumas = (kursuPabaiga - kursuPradzia).TotalDays;
 
-            // Ketvirta uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, keturi, keturi);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            Console.WriteLine(kursuPradzia.ToString("yyyy-MM-dd"));
+            Console.WriteLine(kursuPabaiga.ToString("yyyy-MM-dd"));
+            Console.WriteLine(skirtumas);
 
-            // Penkta uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, tuscias, tuscias, vienas);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, trys, du);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            /*Sukurkite tris kintamuosius. tekstinio, sveiko skaitmens ir loginio tipo.
+            Parašykite programą kuri į konsolę visus aprašytus kintamuosius vienoje eilutėje atskiriant tarpu*/
 
-            // Sesta uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, vienas, tuscias, vienas);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, trys, du);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            var tekstas = "Tekstas";
+            var skaitmuo = 6;
+            var taip = false;
 
-            // Septinta uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, du, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, tuscias, du, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, tuscias, du, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, vienas, du, vienas);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, du, du);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
-
-            // Astunta uzduotis
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, tuscias, tuscias, vienas);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, tuscias, tuscias, du);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, tuscias, tuscias, trys);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, tuscias, tuscias, keturi);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
-
-            // Devinta uzduotis
-            vienas = vienas.Replace('#', '"');
-            du = du.Replace('#', '"');
-            trys = trys.Replace('#', '"');
-            keturi = keturi.Replace('#', '"');
-
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, tuscias, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, vienas, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, du, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, trys, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, tuscias, tuscias);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
-
-            // Desimta uzduotis
-            Console.WriteLine("Iveskite pirmo stulpelio pirma eilute:");
-            var ivestaVerte = Console.ReadLine();
-
-            Console.WriteLine("{0} {1}  {2}  {3}", pirmosEilutesPradzia, ivestaVerte, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", antrosEilutesPradzia, vienas, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", treciosEilutesPradzia, du, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", ketvirtosEilutesPradzia, trys, tuscias, tuscias);
-            Console.WriteLine("{0} {1}  {2}  {3}", penktosEilutesPradzia, keturi, tuscias, tuscias);
-            Console.WriteLine(apacia);
-            Console.WriteLine();
+            Console.WriteLine("{0} {1} {2}", tekstas, skaitmuo, taip);
         }
     }
 }
