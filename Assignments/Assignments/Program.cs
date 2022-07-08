@@ -18,8 +18,13 @@ namespace Assignments06
             assignment2.Method();
             */
 
+            /*
             var amziausMelagis = new AmziausMelagis();
             amziausMelagis.PateiktiRegistracijosForma();
+            */
+
+            var dnrInzinerija = new DNRInzinerija();
+            dnrInzinerija.ModifikuotiDNRGrandine();
         }
     }
 }
