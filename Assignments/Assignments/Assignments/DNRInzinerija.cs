@@ -6,7 +6,6 @@
         private bool _arValiduota = false;
         public void ModifikuotiDNRGrandine()
         {
-            
             /*Tarkime turime DNR grandinę užkoduotą tekstu var txt =" T CG-TAC- gaC-TAC-CGT-CAG-ACT-TAa-CcA-GTC-cAt-AGA-GCT    ".
             Galimos bazės: Adenine, Thymine, Cytosine, Guanine
                 Parašykite programą kurioje atsiranda MENIU kuriame naudotojas gali pasirinkti:
@@ -32,7 +31,6 @@
                         (reikalinga validacija ar nėra kitų kaip ATCG ir 3 raidės)
                     9) Grįžti į ankstesnį meniu
             Visoms operacijoms reikalingi testai.*/
-
             var grandine = " T CG-TAC- gaC-TAC-CGT-CAG-ACT-TAa-CcA-GTC-cAt-AGA-GCT    ";
             PagrindinisMeniu(ref grandine);
         }
