@@ -1,0 +1,11 @@
+{
+  "KartuvesData": {
+    "ZodziuTemos": {
+      "Vardai": [ "Gertrūda", "Juozas", "Mindaugas", "Kristina" ],
+      "Lietuvos miestai": [ "Vilnius", "Kėdainiai", "Jonava" ],
+      "Valstybes": [ "Mianmaras", "Seišeliai", "Švedija", "Naujoji Zelandija" ],
+      "Kita": [ "Kopūstas", "Greitpuodis", "Vandensvydis" ],
+      "Spalvos":  ["Juoda", "Raudona", "Geltona"]
+    }
+  }
+}
