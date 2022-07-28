@@ -1,0 +1,22 @@
+{
+  "KartuvesData": {
+    "Temos": [
+      {
+        1,
+        "Vardai"
+      },
+      {
+        2,
+        "Lietuvos miestai"
+      },
+      {
+        3,
+        "Valstybes"
+      },
+      {
+        4,
+        "Kita"
+      }
+    ]
+  }
+}

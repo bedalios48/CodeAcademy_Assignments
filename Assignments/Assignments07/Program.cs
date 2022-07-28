@@ -3,4 +3,7 @@
 Console.WriteLine("Hello, World!");
 
 var superSkaiciuotuvas = new SuperSkaiciuotuvoUzduotis();
-superSkaiciuotuvas.SkaiciuotuvoMeniu();
+//superSkaiciuotuvas.SkaiciuotuvoMeniu();
+
+var kartuves = new Kartuves();
+kartuves.KartuviuVaizdavimas();
