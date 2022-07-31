@@ -39,7 +39,7 @@ namespace Assignments07.Assignments
                 string zodis;
                 while(!IsrinktiZodi(zodziuTemos[PasirinktiMeniuPunkta()], out zodis))
                 {
-                    Console.WriteLine("Pasirinktoje kategorijoje žodžių nebeliko. Rinkitės kitą kategoriją:");
+                    Console.WriteLine("Pasirinktoje kategorijoje žodžių nebeliko. Rinkitės kitą kategoriją.");
                 }
                 zodzioRaides = zodis.ToLower().ToCharArray().ToList();
                 SpetiZodi(zodis);
@@ -97,7 +97,14 @@ namespace Assignments07.Assignments
             while (!arZodisAtspetas && neteisingiSpejimai < bandymuKiekis)
             {
                 ZaidimoKonsole(neteisingiSpejimai);
-                var raide = RaidesPriemimas();
+                var raide = SpejimoPriemimas(out var zodzioSpejimas);
+                if(zodzioSpejimas != null)
+                {
+                    if (zodzioSpejimas.ToLower() == zodis.ToLower())
+                        arZodisAtspetas = true;
+                    else neteisingiSpejimai = bandymuKiekis;
+                    continue;
+                }
                 if (!zodzioRaides.Contains(raide) && !panaudotosRaides.Contains(raide))
                     neteisingiSpejimai++;
                 if (!panaudotosRaides.Contains(raide))
@@ -148,14 +155,26 @@ namespace Assignments07.Assignments
             return klaidingosRaides;
         }
 
-        private char RaidesPriemimas()
+        private char SpejimoPriemimas(out string? zodis)
         {
             var tinkamosRaides = new char[] { 'a', 'ą', 'b', 'c', 'č', 'd', 'e', 'ę', 'ė', 'f', 'g',
                 'h', 'i', 'į', 'y', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 'š', 't', 'u', 'ū',
                 'ų', 'v', 'z', 'ž' };
-            var raide = Console.ReadKey().KeyChar;
-            while (!tinkamosRaides.Contains(char.Parse(raide.ToString().ToLower())))
-                raide = Console.ReadKey().KeyChar;
+
+            var arRaide = true;
+            var arZodis = false;
+            string ivestis;
+            char raide;
+            do
+            {
+                ivestis = Console.ReadLine();
+                arRaide = char.TryParse(ivestis, out raide) && tinkamosRaides.Contains(raide);
+                arZodis = ivestis.Length > 1;
+            }
+            while (!(arRaide || arZodis));
+
+            zodis = arZodis ? ivestis.Trim() : null;
+
             return raide;
         }
 
