@@ -155,17 +155,6 @@ namespace Assignments07.Assignments
             return klaidingosRaides;
         }
 
-        private char RaidesPriemimas()
-        {
-            var tinkamosRaides = new char[] { 'a', 'ą', 'b', 'c', 'č', 'd', 'e', 'ę', 'ė', 'f', 'g',
-                'h', 'i', 'į', 'y', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 'š', 't', 'u', 'ū',
-                'ų', 'v', 'z', 'ž' };
-            var raide = Console.ReadKey().KeyChar;
-            while (!tinkamosRaides.Contains(char.Parse(raide.ToString().ToLower())))
-                raide = Console.ReadKey().KeyChar;
-            return raide;
-        }
-
         private char SpejimoPriemimas(out string? zodis)
         {
             var tinkamosRaides = new char[] { 'a', 'ą', 'b', 'c', 'č', 'd', 'e', 'ę', 'ė', 'f', 'g',
