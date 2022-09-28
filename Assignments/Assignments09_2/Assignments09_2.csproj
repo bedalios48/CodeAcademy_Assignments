@@ -12,19 +12,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Assignments09.Domain\Assignments09.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="configs\game.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Assignments09_2.Domain\Assignments09_2.Domain.csproj" />
+    <ProjectReference Include="..\Assignments09_2.Infrastructure\Assignments09_2.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
