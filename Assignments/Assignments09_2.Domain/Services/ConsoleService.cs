@@ -35,5 +35,25 @@ namespace Assignments09_2.Domain.Services
                 Console.WriteLine(customer.CustomerId + ". " + customer.FirstName + " " + customer.LastName);
             }
         }
+
+        public void PrintString(string value) => Console.WriteLine(value);
+        public string GetValue() => Console.ReadLine();
+        public void ClearConsole() => Console.Clear();
+
+        public void PrintPurchaseMenu()
+        {
+            var menu = "-------------------------------------------------------------- " + Environment.NewLine +
+            "| #       | Pasirinkimas | " + Environment.NewLine +
+            "--------------------------------------------------------------" + Environment.NewLine +
+            "| 1.  | Peržiūrėti katalogą | " + Environment.NewLine +
+            "--------------------------------------------------------------" + Environment.NewLine +
+            "| 2.  | Įdėti į krepšelį     | " + Environment.NewLine +
+            "--------------------------------------------------------------" + Environment.NewLine +
+            "| 3.  | Peržiūrėti krepšelį | " + Environment.NewLine +
+            "--------------------------------------------------------------" + Environment.NewLine +
+            "| 4.  | Peržiūrėti pirkimų istorija(Išrašai) | " + Environment.NewLine +
+            "--------------------------------------------------------------";
+            Console.WriteLine(menu);
+        }
     }
 }

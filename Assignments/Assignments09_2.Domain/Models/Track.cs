@@ -20,6 +20,7 @@ namespace Assignments09_2.Domain.Models
         public long Milliseconds { get; set; }
         public long? Bytes { get; set; }
         public byte[] UnitPrice { get; set; } = null!;
+        public string Status { get; set; } = "Active";
 
         public virtual Album? Album { get; set; }
         public virtual Genre? Genre { get; set; }

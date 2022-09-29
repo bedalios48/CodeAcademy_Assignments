@@ -13,5 +13,13 @@ namespace Assignments09_2.Infrastructure.Repositories
         }
 
         public List<Customer> GetCustomers() => _context.Customers.ToList();
+
+        public void AddNewCustomer(Customer customer)
+        {
+            _context.Add(customer);
+            _context.SaveChanges();
+        }
+
+        public List<Track> GetActiveTracks() => _context.Tracks.Where(t => t.Status == "Active").ToList();
     }
 }
