@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assignments09_2.Domain.Models
+namespace Assignments09_2.Domain.Models.Database
 {
     public partial class Track
     {
@@ -28,5 +28,6 @@ namespace Assignments09_2.Domain.Models
         public virtual ICollection<InvoiceItem> InvoiceItems { get; set; }
 
         public virtual ICollection<Playlist> Playlists { get; set; }
+        public virtual decimal Price => decimal.Parse(new string(UnitPrice.Select(x => Convert.ToChar(x)).ToArray()));
     }
 }

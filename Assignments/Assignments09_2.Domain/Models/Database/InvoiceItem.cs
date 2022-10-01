@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assignments09_2.Domain.Models
+namespace Assignments09_2.Domain.Models.Database
 {
     public partial class InvoiceItem
     {

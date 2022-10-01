@@ -13,7 +13,7 @@ namespace Assignments09_2.Infrastructure.Migrations
                 table: "tracks",
                 type: "TEXT",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: "Active");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

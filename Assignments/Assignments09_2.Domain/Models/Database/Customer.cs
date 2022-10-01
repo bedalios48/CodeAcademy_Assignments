@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Assignments09_2.Domain.Models
+namespace Assignments09_2.Domain.Models.Database
 {
     public partial class Customer
     {
@@ -25,7 +25,7 @@ namespace Assignments09_2.Domain.Models
         public string? PostalCode { get; set; }
         public string? Phone { get; set; }
         public string? Fax { get; set; }
-        [Required] 
+        [Required]
         public string Email { get; set; } = null!;
         public long? SupportRepId { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Assignments09_2.Domain.Models;
+using Assignments09_2.Domain.Models.Database;
 
 namespace Assignments09_2.Domain.Interfaces
 {
@@ -11,5 +12,12 @@ namespace Assignments09_2.Domain.Interfaces
         string GetValue();
         void ClearConsole();
         void PrintPurchaseMenu();
+        void PrintTrackMenu(List<Track> tracks);
+        void PrintDataOptions();
+        string GetInput(string[] allowedValues);
+        void PrintOrderOptions();
+        void PrintSearchOptions();
+        void PrintAddToBasketOptions();
+        void PrintInvoiceInfo(Session session);
     }
 }

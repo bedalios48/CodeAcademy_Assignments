@@ -1,6 +1,7 @@
 ﻿using Assignments09_2.Domain.Interfaces;
-using Assignments09_2.Domain.Models;
+using Assignments09_2.Domain.Models.Database;
 using Assignments09_2.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Assignments09_2.Infrastructure.Repositories
 {
@@ -20,6 +21,25 @@ namespace Assignments09_2.Infrastructure.Repositories
             _context.SaveChanges();
         }
 
-        public List<Track> GetActiveTracks() => _context.Tracks.Where(t => t.Status == "Active").ToList();
+        public List<Track> GetActiveTracks() => _context.Tracks.Where(t => t.Status == "Active")
+            .Include(x => x.Genre)
+            .Include(x => x.Album).ToList();
+
+        public string GetGenreName(long? genreId) => genreId == null ? "" :
+            _context.Genres.Where(g => g.GenreId == genreId).FirstOrDefault().Name;
+
+        public string GetAlbumTitle(long? albumId) => albumId == null ? "" :
+            _context.Albums.Where(a => a.AlbumId == albumId).FirstOrDefault().Title;
+
+        public Customer GetCustomer(long customerId)
+        {
+            return _context.Customers.Where(c => c.CustomerId == customerId).FirstOrDefault();
+        }
+
+        public void AddNewInvoice(Invoice invoice)
+        {
+            _context.Add(invoice);
+            _context.SaveChanges();
+        }
     }
 }

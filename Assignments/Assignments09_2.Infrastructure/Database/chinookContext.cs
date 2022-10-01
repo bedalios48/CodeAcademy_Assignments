@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Assignments09_2.Domain.Models;
+using Assignments09_2.Domain.Models.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
