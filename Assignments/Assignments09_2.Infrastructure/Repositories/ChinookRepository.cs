@@ -41,5 +41,48 @@ namespace Assignments09_2.Infrastructure.Repositories
             _context.Add(invoice);
             _context.SaveChanges();
         }
+
+        public List<Invoice> GetAllInvoices(long customerId)
+        {
+            return _context.Invoices.Where(i => i.CustomerId == customerId)
+                .Include(i => i.InvoiceItems)
+                .ToList();
+        }
+
+        public void DeleteCustomer(long customerId)
+        {
+            var customerToDelete = _context.Customers
+                .Where(c => c.CustomerId == customerId)
+                .Include(c => c.Invoices)
+                .FirstOrDefault();
+            foreach(var invoice in customerToDelete.Invoices)
+            {
+                invoice.InvoiceItems = _context.InvoiceItems
+                    .Where(i => i.InvoiceId == invoice.InvoiceId).ToList();
+            }
+            _context.Remove(customerToDelete);
+            _context.SaveChanges();
+        }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            var customerToUpdate = _context.Customers
+                .Where(c => c.CustomerId == customer.CustomerId).FirstOrDefault();
+            customerToUpdate = customer;
+            _context.SaveChanges();
+        }
+
+        public List<Track> GetTracks() => _context.Tracks.ToList();
+
+        public Track GetTrack(int trackId) => _context.Tracks
+            .Where(t => t.TrackId == trackId).FirstOrDefault();
+
+        public void UpdateTrack(Track track)
+        {
+            var trackToUpdate = _context.Tracks
+            .Where(t => t.TrackId == track.TrackId).FirstOrDefault();
+            trackToUpdate = track;
+            _context.SaveChanges();
+        }
     }
 }

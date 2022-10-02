@@ -6,5 +6,9 @@ using Assignments09_2.Infrastructure.Repositories;
 
 Console.WriteLine("Hello, World!");
 
-IMusicShopService musicShop = new MusicShopService(new ConsoleService(), new ChinookRepository(new chinookContext()));
+var consoleService = new ConsoleService();
+var context = new chinookContext();
+var repository = new ChinookRepository(context);
+var operations = new MusicShopServiceOperations(consoleService, repository);
+IMusicShopService musicShop = new MusicShopService(consoleService, repository, operations);
 musicShop.ManageMusicShop();

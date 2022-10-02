@@ -90,7 +90,8 @@ namespace Assignments09_2.Infrastructure.Database
 
                 entity.HasOne(d => d.SupportRep)
                     .WithMany(p => p.Customers)
-                    .HasForeignKey(d => d.SupportRepId);
+                    .HasForeignKey(d => d.SupportRepId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -160,7 +161,12 @@ namespace Assignments09_2.Infrastructure.Database
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Invoices)
                     .HasForeignKey(d => d.CustomerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.InvoiceItems)
+                    .WithOne(p => p.Invoice)
+                    .HasForeignKey(d => d.InvoiceId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<InvoiceItem>(entity =>
@@ -178,12 +184,12 @@ namespace Assignments09_2.Infrastructure.Database
                 entity.HasOne(d => d.Invoice)
                     .WithMany(p => p.InvoiceItems)
                     .HasForeignKey(d => d.InvoiceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(d => d.Track)
                     .WithMany(p => p.InvoiceItems)
                     .HasForeignKey(d => d.TrackId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<MediaType>(entity =>

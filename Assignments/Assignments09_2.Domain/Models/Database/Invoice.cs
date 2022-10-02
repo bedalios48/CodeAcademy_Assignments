@@ -43,5 +43,6 @@ namespace Assignments09_2.Domain.Models.Database
 
         public virtual Customer Customer { get; set; } = null!;
         public virtual ICollection<InvoiceItem> InvoiceItems { get; set; }
+        public virtual decimal TotalPrice => decimal.Parse(new string(Total.Select(x => Convert.ToChar(x)).ToArray()));
     }
 }

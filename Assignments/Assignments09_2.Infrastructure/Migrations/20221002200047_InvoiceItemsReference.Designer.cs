@@ -3,6 +3,7 @@ using System;
 using Assignments09_2.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignments09_2.Infrastructure.Migrations
 {
     [DbContext(typeof(chinookContext))]
-    partial class chinookContextModelSnapshot : ModelSnapshot
+    [Migration("20221002200047_InvoiceItemsReference")]
+    partial class InvoiceItemsReference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
