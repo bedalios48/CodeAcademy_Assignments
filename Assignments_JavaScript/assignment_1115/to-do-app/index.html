@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="to-do-box">
+        <div class="container">
+            <h1>To Do List</h1>
+            <h2 id="nameSurname">Name Surname</h2>
+            <table id="to-do-list">
+            </table>
+            <p id="list-message"></p>
+            <button type="button" id="showList">Show list</button>
+            <button type="button" id="hideList">Hide list</button>
+            <form id="add-to-do-form">
+                <hr>
+                <label id="type-label" for="type"><b>Type</b></label>
+                <input type="text" placeholder="Enter Type" name="type" id="type" required></input>
+                <label id="content-label" for="content"><b>Content</b></label>
+                <input type="text" placeholder="Enter Content" name="content" id="content" required></input>
+                <label id="endDate-label" for="endDate"><b>End Date</b></label>
+                <input type="date" placeholder="Enter End Date" name="endDate" id="endDate" required></input>
+                <hr>
+                <div class="form-buttons">
+                    <button type="button" id="submit-button">Submit</button>
+                    <button type="button" id="cancel-button">Cancel</button>
+                </div>
+            </form>
+            <button type="button" id="add-to-do-button">Add</button>
+            <button type="button" id="log-out-button">Log out</button>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
