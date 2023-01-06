@@ -1,5 +1,6 @@
 using GenealogyTree.Adapters;
 using GenealogyTree.Domain.Interfaces;
+using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Infrastructure.Services;
 using System.Reflection;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(RelativeProfile));
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
