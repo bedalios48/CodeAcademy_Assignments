@@ -1,4 +1,4 @@
-﻿using GenealogyTree.Domain.Interfaces;
+﻿using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Domain.Models;
 
 namespace GenealogyTree.Infrastructure.Services
