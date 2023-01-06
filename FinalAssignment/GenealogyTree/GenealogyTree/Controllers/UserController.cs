@@ -36,7 +36,6 @@ namespace GenealogyTree.Controllers
 
             var token = _jwtService.GetJwtToken(user.Id, user.Role);
 
-
             return Ok(new LoginResponse { UserName = loginRequest.UserName, Token = token });
         }
 
@@ -47,22 +46,12 @@ namespace GenealogyTree.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterRequest registerRequest)
         {
-            //if (await _userRepository.ExistsAsync(registerRequest.UserName))
-            //    return BadRequest("User already exists");
+            if (await _userRepository.ExistsAsync(registerRequest.UserName))
+                return BadRequest("User already exists");
 
             _passwordService.CreatePasswordHash(registerRequest.Password, out var passwordHash, out var passwordSalt);
 
-            var user = _mapper.Map<User>(registerRequest);
-
-            /*
-            var user = new User
-            {
-                UserName = registerRequest.UserName,
-                Role = registerRequest.Role,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
-            };
-            */
+            var user = _mapper.Map<User>((registerRequest, passwordHash, passwordSalt));
             var id = await _userRepository.Register(user);
 
             return Created(nameof(Login), new { id = id });
