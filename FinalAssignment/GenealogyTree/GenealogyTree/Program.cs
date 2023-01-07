@@ -1,12 +1,18 @@
 using GenealogyTree.Adapters;
 using GenealogyTree.Domain.Interfaces;
 using GenealogyTree.Domain.Interfaces.IRepositories;
+using GenealogyTree.Infrastructure.Data;
 using GenealogyTree.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<GenealogyTreeContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("GenealogyTreeConnectionString"));
+});
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(RelativeProfile));
 builder.Services.AddScoped<IPasswordService, PasswordService>();
