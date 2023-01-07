@@ -16,6 +16,8 @@ builder.Services.AddDbContext<GenealogyTreeContext>(options =>
 });
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(RelativeProfile));
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IParentChildRepository, ParentChildRepository>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
