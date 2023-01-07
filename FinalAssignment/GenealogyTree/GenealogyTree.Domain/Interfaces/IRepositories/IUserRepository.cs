@@ -1,6 +1,6 @@
 ﻿using GenealogyTree.Domain.Models;
 
-namespace GenealogyTree.Domain.Interfaces
+namespace GenealogyTree.Domain.Interfaces.IRepositories
 {
     public interface IUserRepository
     {
