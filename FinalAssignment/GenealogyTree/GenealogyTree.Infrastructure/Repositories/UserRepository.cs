@@ -1,7 +1,7 @@
 ﻿using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Domain.Models;
 
-namespace GenealogyTree.Infrastructure.Services
+namespace GenealogyTree.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {

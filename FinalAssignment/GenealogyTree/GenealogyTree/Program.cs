@@ -2,6 +2,7 @@ using GenealogyTree.Adapters;
 using GenealogyTree.Domain.Interfaces;
 using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Infrastructure.Data;
+using GenealogyTree.Infrastructure.Repositories;
 using GenealogyTree.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
