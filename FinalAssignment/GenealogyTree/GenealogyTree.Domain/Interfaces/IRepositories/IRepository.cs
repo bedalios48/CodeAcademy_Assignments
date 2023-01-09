@@ -10,6 +10,7 @@ namespace GenealogyTree.Domain.Interfaces.IRepositories
         Task<bool> ExistAsync(Expression<Func<TEntity, bool>> filter);
         Task<int> CreateAsync(TEntity entity);
         Task RemoveAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
         Task SaveAsync();
     }
 }

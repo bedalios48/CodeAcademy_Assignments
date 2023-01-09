@@ -66,6 +66,12 @@ namespace GenealogyTree.Infrastructure.Repositories
             await SaveAsync();
         }
 
+        public async Task UpdateAsync(TEntity entity)
+        {
+            _dbSet.Update(entity);
+            await SaveAsync();
+        }
+
         public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
