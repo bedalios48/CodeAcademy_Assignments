@@ -1,4 +1,4 @@
-﻿namespace GenealogyTree.Infrastructure.Interfaces
+﻿namespace GenealogyTree.Domain.Interfaces.IRepositories
 {
     public interface IEntity
     {

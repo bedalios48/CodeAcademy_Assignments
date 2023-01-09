@@ -1,6 +1,5 @@
 ﻿using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Infrastructure.Data;
-using GenealogyTree.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
