@@ -1,11 +1,12 @@
 ﻿using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Infrastructure.Data;
+using GenealogyTree.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace GenealogyTree.Infrastructure.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
         private readonly GenealogyTreeContext _db;
         private DbSet<TEntity> _dbSet;
@@ -15,10 +16,11 @@ namespace GenealogyTree.Infrastructure.Repositories
             _db = db;
             _dbSet = _db.Set<TEntity>();
         }
-        public async Task CreateAsync(TEntity entity)
+        public async Task<int> CreateAsync(TEntity entity)
         {
             _dbSet.Add(entity);
             await SaveAsync();
+            return entity.Id;
         }
 
         public async Task<bool> ExistAsync(Expression<Func<TEntity, bool>> filter)
@@ -45,9 +47,18 @@ namespace GenealogyTree.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, bool tracked = true)
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, bool tracked = true)
         {
-            throw new NotImplementedException();
+            IQueryable<TEntity> query = _dbSet;
+
+            if (!tracked)
+            {
+                query = query.AsNoTracking();
+            }
+
+            query = query.Where(filter);
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task RemoveAsync(TEntity entity)
