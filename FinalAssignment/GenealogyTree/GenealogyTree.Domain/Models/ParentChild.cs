@@ -1,6 +1,8 @@
-﻿namespace GenealogyTree.Domain.Models
+﻿using GenealogyTree.Domain.Interfaces.IRepositories;
+
+namespace GenealogyTree.Domain.Models
 {
-    public class ParentChild
+    public class ParentChild : IEntity
     {
         public int Id { get; set; }
         public int ParentId { get; set; }
