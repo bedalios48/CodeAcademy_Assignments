@@ -3,6 +3,7 @@ using System;
 using GenealogyTree.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenealogyTree.Infrastructure.Migrations
 {
     [DbContext(typeof(GenealogyTreeContext))]
-    partial class GenealogyTreeContextModelSnapshot : ModelSnapshot
+    [Migration("20230109192333_BirthPlace")]
+    partial class BirthPlace
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
