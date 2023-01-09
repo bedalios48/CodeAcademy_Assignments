@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GenealogyTree.Domain.Interfaces;
+using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Domain.Models;
 using GenealogyTree.DTO;
 using Microsoft.AspNetCore.Mvc;

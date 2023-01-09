@@ -1,0 +1,112 @@
+﻿using AutoMapper;
+using GenealogyTree.Domain.Interfaces;
+using GenealogyTree.Domain.Interfaces.IRepositories;
+using GenealogyTree.Domain.Models;
+using GenealogyTree.DTO;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
+
+namespace GenealogyTree.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserGenealogyTreeController : ControllerBase
+    {
+        private readonly IRelativeService _relativeService;
+        private readonly IMapper _mapper;
+        private readonly IPersonRepository _personRepo;
+        private readonly IParentChildRepository _parentChildRepo;
+
+        public UserGenealogyTreeController(IMapper mapper, IRelativeService relativeService
+            , IPersonRepository personRepo, IParentChildRepository parentChildRepo)
+        {
+            _mapper = mapper;
+            _relativeService = relativeService;
+            _personRepo = personRepo;
+            _parentChildRepo = parentChildRepo;
+        }
+
+        /// <summary>
+        /// Fetches all user relatives
+        /// </summary>
+        /// <returns>All user relatives</returns>
+        [HttpGet("/api/user/{key}/relatives")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RelativeResponse>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetAllRelatives(int key)
+        {
+            // check if user exists
+            var mainRelative = await _relativeService.GetMainRelative(key);
+            // check if user has relatives
+            var relativeResponses = mainRelative.Relatives.Select(r => _mapper.Map<RelativeResponse>(r));
+            return Ok(relativeResponses);
+        }
+
+        /// <summary>
+        /// Create new person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("/api/user/{key}/createPerson")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> CreatePerson(CreatePersonRequest createPersonRequest)
+        {
+            var person = _mapper.Map<Person>(createPersonRequest);
+            if (await _personRepo.ExistAsync(p => p.Name == person.Name
+            && p.Surname == person.Surname
+            && p.DateOfBirth == person.DateOfBirth
+            && p.BirthPlace == person.BirthPlace))
+                return BadRequest("Person already exists!");
+
+            var personId = await _personRepo.CreateAsync(person);
+
+            return Created("PostPerson", new { PersonId = personId });
+        }
+
+        /// <summary>
+        /// Create new relative
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("/api/user/{key}/createRelation")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> CreateRelation(RelationRequest relativeRequest)
+        {
+            var parentChild = _mapper.Map<ParentChild>(relativeRequest);
+            if (await _parentChildRepo.ExistAsync(pc => pc.ParentId == parentChild.ParentId
+            && pc.ChildId == parentChild.ChildId))
+                return BadRequest("Relation already exists!");
+
+            var parentChildId = await _parentChildRepo.CreateAsync(parentChild);
+            return Created("RelationPost", new { RelationId = parentChildId });
+        }
+
+        /// <summary>
+        /// Link user to person
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("/api/user/{key}/linkUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> LinkUser(int key, int personId)
+        {
+            var person = await _personRepo.GetAsync(p => p.Id == personId);
+            person.UserId = key;
+
+            await _personRepo.UpdateAsync(person);
+            return Ok();
+        }
+    }
+}
