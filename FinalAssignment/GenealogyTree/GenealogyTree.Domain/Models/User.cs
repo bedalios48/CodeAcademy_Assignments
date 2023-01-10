@@ -1,6 +1,8 @@
-﻿namespace GenealogyTree.Domain.Models
+﻿using GenealogyTree.Domain.Interfaces.IRepositories;
+
+namespace GenealogyTree.Domain.Models
 {
-    public class User
+    public class User : IEntity
     {
         public int Id { get; set; }
         public string Role { get; set; }
