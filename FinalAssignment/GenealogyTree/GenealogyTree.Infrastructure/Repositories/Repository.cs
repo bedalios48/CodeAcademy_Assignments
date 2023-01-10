@@ -34,7 +34,8 @@ namespace GenealogyTree.Infrastructure.Repositories
             return await query.AnyAsync(filter);
         }
 
-        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null
+            ,Expression<Func<TEntity, object>>? filterInclude = null)
         {
             IQueryable<TEntity> query = _dbSet;
 
@@ -42,6 +43,9 @@ namespace GenealogyTree.Infrastructure.Repositories
             {
                 query = query.Where(filter);
             }
+
+            if(filterInclude != null)
+                query = query.Include(filterInclude);
 
             return await query.ToListAsync();
         }
