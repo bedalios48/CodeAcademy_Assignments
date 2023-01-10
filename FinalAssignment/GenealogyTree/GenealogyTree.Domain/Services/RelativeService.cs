@@ -32,13 +32,15 @@ namespace GenealogyTree.Domain.Services
 
         private async Task<IEnumerable<Relative>> GetChildren(int parentId, string relation)
         {
-            var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ParentId == parentId);
+            var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ParentId == parentId,
+                pc => pc.Child);
             return parentChildren.Select(pc => new Relative(pc.Child, relation));
         }
 
         private async Task<IEnumerable<Relative>> GetParents(int childId, string relation)
         {
-            var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ChildId == childId);
+            var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ChildId == childId,
+                pc => pc.Parent);
             return parentChildren.Select(pc => new Relative(pc.Parent, relation));
         }
     }
