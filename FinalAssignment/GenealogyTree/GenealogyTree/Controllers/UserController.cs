@@ -31,8 +31,8 @@ namespace GenealogyTree.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginRequest loginRequest)
         {
-            var isOk = await _userRepository.TryLoginAsync(loginRequest.UserName, loginRequest.Password, out var user);
-            if (!isOk)
+            var user = await _userRepository.TryLoginAsync(loginRequest.UserName, loginRequest.Password);
+            if (user is null)
                 return Unauthorized("Bad username or password");
 
             var token = _jwtService.GetJwtToken(user.Id, user.Role);
@@ -47,13 +47,13 @@ namespace GenealogyTree.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterRequest registerRequest)
         {
-            if (await _userRepository.ExistsAsync(registerRequest.UserName))
+            if (await _userRepository.ExistAsync(u => u.UserName == registerRequest.UserName))
                 return BadRequest("User already exists");
 
             _passwordService.CreatePasswordHash(registerRequest.Password, out var passwordHash, out var passwordSalt);
 
             var user = _mapper.Map<User>((registerRequest, passwordHash, passwordSalt));
-            var id = await _userRepository.Register(user);
+            var id = await _userRepository.CreateAsync(user);
 
             return Created(nameof(Login), new { id = id });
         }
