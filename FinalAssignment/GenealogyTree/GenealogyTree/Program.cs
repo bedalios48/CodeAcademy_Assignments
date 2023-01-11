@@ -36,6 +36,13 @@ builder.Services.AddSwaggerGen(option =>
     option.IncludeXmlComments(xmlPath);
 });
 
+builder.Services.AddCors(p => p.AddPolicy("corsfordish", builder =>
+{
+    builder.WithOrigins("*")
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+}));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,6 +51,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("corsfordish");
 
 app.UseHttpsRedirection();
 
