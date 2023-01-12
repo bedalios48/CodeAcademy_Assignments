@@ -46,6 +46,27 @@ namespace GenealogyTree.Controllers
         }
 
         /// <summary>
+        /// Gets user person
+        /// </summary>
+        /// <returns>Person</returns>
+        [HttpGet("/api/user/{key}/person")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PersonResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GetUserPerson(int key)
+        {
+            var person = await _personRepo.GetAsync(p => p.UserId == key);
+            if (person is null)
+                return NotFound();
+
+            var personResponse = _mapper.Map<PersonResponse>(person);
+            return Ok(personResponse);
+        }
+
+        /// <summary>
         /// Create new person
         /// </summary>
         /// <returns></returns>
