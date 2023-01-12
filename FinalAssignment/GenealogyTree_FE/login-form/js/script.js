@@ -1,15 +1,17 @@
+import { callEndpoint } from "../../js/functions.js";
 const loginForm = document.querySelector('#login');
 const submitLogin = document.querySelector('#submit-login');
 
-sendData = async () => {
+let sendData = async () => {
     const errorMessages = document.querySelectorAll(".error-message");
-    for (m of errorMessages) {
+    for (let m of errorMessages) {
         m.parentElement.removeChild(m);
     }
     message.innerHTML = '';
     let data = new FormData(loginForm);
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
+
     if (obj.username === "" || obj.password === "") {
         if (obj.username === "") {
             const usernameLabel = document.getElementById('username-label');
@@ -21,29 +23,14 @@ sendData = async () => {
         }
         return;
     }
-    const settings = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(obj)
-    };
-    try {
-        console.log(settings);
-        const fetchResponse = await fetch('https://localhost:7008/api/User/login', settings);
-        console.log('response.status: ', fetchResponse.status);
-        console.log(fetchResponse);
-        const fetchData = await fetchResponse.json();
-        console.log(fetchData);
-        const token = fetchData.token;
-        localStorage.setItem("token", token);
-        console.log(token);
-        return token;
-    } catch (e) {
-        return e;
-    }
 
+    const fetchData = await callEndpoint('https://localhost:7008/api/User/login', 'POST', obj);
+    console.log(fetchData);
+    if (fetchData != null)
+    {
+        localStorage.setItem("token", fetchData.token);
+        window.location = '../genealogy-tree/index.html';
+    }
 }
 
 submitLogin.addEventListener('click', (e) => {
