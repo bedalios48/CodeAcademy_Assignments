@@ -9,6 +9,8 @@ namespace GenealogyTree.Adapters
         public PersonProfile()
         {
             CreateMap<CreatePersonRequest, Person>();
+            CreateMap<Person, PersonResponse>()
+                .ForMember(p => p.PersonId, opt => opt.MapFrom(p => p.Id));
         }
     }
 }
