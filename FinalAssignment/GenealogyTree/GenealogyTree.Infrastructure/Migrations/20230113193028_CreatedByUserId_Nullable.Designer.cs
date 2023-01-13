@@ -3,6 +3,7 @@ using System;
 using GenealogyTree.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenealogyTree.Infrastructure.Migrations
 {
     [DbContext(typeof(GenealogyTreeContext))]
-    partial class GenealogyTreeContextModelSnapshot : ModelSnapshot
+    [Migration("20230113193028_CreatedByUserId_Nullable")]
+    partial class CreatedByUserIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -26,7 +29,7 @@ namespace GenealogyTree.Infrastructure.Migrations
                     b.Property<int>("ChildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CreatedByUserId")
+                    b.Property<int?>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ParentId")
@@ -52,7 +55,7 @@ namespace GenealogyTree.Infrastructure.Migrations
                     b.Property<string>("BirthPlace")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedByUserId")
+                    b.Property<int?>("CreatedByUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateOfBirth")
@@ -117,8 +120,7 @@ namespace GenealogyTree.Infrastructure.Migrations
                     b.HasOne("GenealogyTree.Domain.Models.User", "CreatedByUser")
                         .WithMany("CreatedRelations")
                         .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("GenealogyTree.Domain.Models.Person", "Parent")
                         .WithMany("Children")
@@ -138,8 +140,7 @@ namespace GenealogyTree.Infrastructure.Migrations
                     b.HasOne("GenealogyTree.Domain.Models.User", "CreatedByUser")
                         .WithMany("CreatedPeople")
                         .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("GenealogyTree.Domain.Models.User", "User")
                         .WithOne("Person")
