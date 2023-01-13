@@ -4,6 +4,6 @@ namespace GenealogyTree.Domain.Interfaces
 {
     public interface IRelativeService
     {
-        Task<MainRelative> GetMainRelative(int key);
+        Task<MainRelative> GetMainRelative(int personId);
     }
 }

@@ -36,6 +36,18 @@ namespace GenealogyTree.Infrastructure.Data
                 .WithMany(x => x.Parents)
                 .HasForeignKey(u => u.ChildId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ParentChild>()
+                .HasOne(x => x.CreatedByUser)
+                .WithMany(x => x.CreatedRelations)
+                .HasForeignKey(u => u.CreatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Person>()
+                .HasOne(x => x.CreatedByUser)
+                .WithMany(x => x.CreatedPeople)
+                .HasForeignKey(u => u.CreatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

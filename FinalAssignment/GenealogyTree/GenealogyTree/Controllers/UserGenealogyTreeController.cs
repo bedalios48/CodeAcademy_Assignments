@@ -30,16 +30,16 @@ namespace GenealogyTree.Controllers
         /// Fetches all user relatives
         /// </summary>
         /// <returns>All user relatives</returns>
-        [HttpGet("/api/user/{key}/relatives")]
+        [HttpGet("/api/user/relatives")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<RelativeResponse>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GetAllRelatives(int key)
+        public async Task<IActionResult> GetCloseRelatives(int personId)
         {
             // check if user exists
-            var mainRelative = await _relativeService.GetMainRelative(key);
+            var mainRelative = await _relativeService.GetMainRelative(personId);
             // check if user has relatives
             var relativeResponses = mainRelative.Relatives.Select(r => _mapper.Map<RelativeResponse>(r));
             return Ok(relativeResponses);
@@ -76,9 +76,9 @@ namespace GenealogyTree.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Produces(MediaTypeNames.Application.Json)]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CreatePerson(CreatePersonRequest createPersonRequest)
+        public async Task<IActionResult> CreatePerson(int key, CreatePersonRequest createPersonRequest)
         {
-            var person = _mapper.Map<Person>(createPersonRequest);
+            var person = _mapper.Map<Person>((createPersonRequest, key));
             if (await _personRepo.ExistAsync(p => p.Name == person.Name
             && p.Surname == person.Surname
             && p.DateOfBirth == person.DateOfBirth
@@ -100,7 +100,7 @@ namespace GenealogyTree.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Produces(MediaTypeNames.Application.Json)]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CreateRelation(RelationRequest relativeRequest)
+        public async Task<IActionResult> CreateRelation(int key, RelationRequest relativeRequest)
         {
             var parentChild = _mapper.Map<ParentChild>(relativeRequest);
             if (await _parentChildRepo.ExistAsync(pc => pc.ParentId == parentChild.ParentId

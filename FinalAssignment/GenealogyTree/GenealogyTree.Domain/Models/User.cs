@@ -10,5 +10,7 @@ namespace GenealogyTree.Domain.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public virtual Person Person { get; set; }
+        public virtual List<Person> CreatedPeople { get; set; }
+        public virtual List<ParentChild> CreatedRelations { get; set; }
     }
 }
