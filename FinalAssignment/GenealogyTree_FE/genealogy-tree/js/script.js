@@ -1,39 +1,50 @@
 import { callEndpoint } from "../../js/functions.js";
-import { parseJwt } from "../../js/functions.js";
 const showList = document.querySelector('#showList');
 
-const userPerson = async () => {
-    const token = localStorage.getItem('token');
-    const tokenData = parseJwt(token);
-    const userId = tokenData.unique_name;
-    return userId;
-}
-
-let showFamily = async (userId) => {
+let showFamily = async (personId) => {
     const familyTable = document.getElementById('family-members');
     familyTable.innerHTML += '<thead><tr><th>Name</th><th>Relation</th></tr></thead>';
-    const familyData = await callEndpoint(`https://localhost:7008/api/user/${userId}/relatives`, 'GET');
+    const familyData = await callEndpoint(`https://localhost:7008/api/user/relatives?personId=${personId}`, 'GET');
     console.log(familyData);
     familyData.forEach(element => {
         familyTable.innerHTML += `<tbody><tr></tr>
         <th>${element.nameSurname}</th>
-        <th>${element.relation}</th></tbody>`;
+        <th>${element.relation}</th>
+        <th class="selectPersonButton" personId=${element.personId}></th></tbody>`;
     });
+
+    const selectPersonButtons = familyTable.getElementsByClassName('selectPersonButton');
+        for (let btn of selectPersonButtons) {
+            let button = document.createElement('button');
+            button.type = 'button';
+            button.innerHTML = 'Select';
+            let personId = btn.getAttribute('personId');
+            button.addEventListener('click', () => selectPerson(personId));
+            btn.appendChild(button);
+        }
 }
 
-const userId = await userPerson();
-const userData = await callEndpoint(`https://localhost:7008/api/user/${userId}/person`, 'GET');
-console.log(userData);
+const selectPerson = async (personId) => {
+    const person = await callEndpoint(`https://localhost:7008/api/user/person?personId=${personId}`, 'GET');
+    if(person !== null)
+    localStorage.setItem("person", JSON.stringify(person));
+    else
+    localStorage.setItem("person", null);
+
+    window.location.reload();
+}
+
+const person = JSON.parse(localStorage.getItem("person"));
 
 const personTable = document.getElementById('person-info');
 personTable.innerHTML += '<thead><tr><th>Name</th><th>Surname</th><th>Date of birth</th><th>Birth place</th></tr></thead>';
 personTable.innerHTML += `<tbody><tr></tr>
-<th>${userData.name}</th>
-<th>${userData.surname}</th>
-<th>${userData.dateOfBirth}</th>
-<th>${userData.birthPlace}</th></tbody>`;
+<th>${person.name}</th>
+<th>${person.surname}</th>
+<th>${person.dateOfBirth}</th>
+<th>${person.birthPlace}</th></tbody>`;
 
 showList.addEventListener('click', (e) => {
     e.preventDefault();
-    showFamily(userId);
+    showFamily(person.personId);
 })
