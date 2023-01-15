@@ -27,6 +27,15 @@ button:hover {
   opacity: 1;
 }
 
+a {
+  color: dodgerblue;
+}
+
+a:hover {
+  color: rgb(192, 222, 253);
+  cursor: pointer;
+}
+
 .container {
   background-color: rgb(160, 214, 183);
   padding: 3%;

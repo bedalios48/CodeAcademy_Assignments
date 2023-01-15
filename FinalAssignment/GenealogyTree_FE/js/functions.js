@@ -56,7 +56,24 @@ const callPost = async (endpoint, obj) => {
 export {callPost};
 
 const login = async (obj) => {
-    const fetchData = await callEndpoint('https://localhost:7008/api/User/login', 'POST', obj);
+    const settings = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+    };
+    let fetchResponse;
+    try {
+        console.log(settings);
+        fetchResponse = await fetch('https://localhost:7008/api/User/login', settings);
+        if (fetchResponse.status === 401)
+        return fetchResponse.status;
+    } catch (e) {
+        return e;
+    }
+    const fetchData = await fetchResponse.json();
     console.log(fetchData);
     if (fetchData != null)
     {
@@ -71,8 +88,11 @@ const login = async (obj) => {
             localStorage.setItem("user", JSON.stringify(userPerson));
         }
         else
+        {
             localStorage.setItem("person", null);
             localStorage.setItem("user", null);
+        }
+
         window.location = '../genealogy-tree/index.html';
     }
 }
