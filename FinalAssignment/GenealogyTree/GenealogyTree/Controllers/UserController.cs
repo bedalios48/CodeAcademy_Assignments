@@ -41,6 +41,7 @@ namespace GenealogyTree.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Produces("application/json")]
         [Consumes("application/json")]
