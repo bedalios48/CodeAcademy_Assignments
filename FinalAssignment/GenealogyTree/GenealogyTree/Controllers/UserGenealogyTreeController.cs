@@ -4,6 +4,7 @@ using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Domain.Models;
 using GenealogyTree.DTO;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using System.Net.Mime;
 
 namespace GenealogyTree.Controllers
@@ -88,6 +89,46 @@ namespace GenealogyTree.Controllers
         }
 
         /// <summary>
+        /// Finds people
+        /// </summary>
+        /// <returns>People</returns>
+        [HttpGet("/api/user/findPeople")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PersonResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> FindPeople([FromQuery]FindPersonRequest findPersonRequest)
+        {
+            var people = await _personRepo.GetAllAsync();
+            var filteredPeople = GetFilteredPeople(people, findPersonRequest);
+
+            if (filteredPeople.Count() == 0)
+                return NotFound();
+
+            var peopleResponse = filteredPeople.Select(p => _mapper.Map<PersonResponse>(p));
+            return Ok(peopleResponse);
+        }
+
+        private List<Person> GetFilteredPeople(List<Person> people, FindPersonRequest findPerson)
+        {
+            if (!string.IsNullOrEmpty(findPerson.Name))
+                people = people.Where(p => p.Name == findPerson.Name).ToList();
+
+            if (!string.IsNullOrEmpty(findPerson.Surname))
+                people = people.Where(p => p.Surname == findPerson.Surname).ToList();
+
+            if (findPerson.DateOfBirth is not null)
+                people = people.Where(p => p.DateOfBirth == findPerson.DateOfBirth).ToList();
+
+            if (!string.IsNullOrEmpty(findPerson.BirthPlace))
+                people = people.Where(p => p.BirthPlace == findPerson.BirthPlace).ToList();
+
+            return people;
+        }
+
+        /// <summary>
         /// Create new person
         /// </summary>
         /// <returns></returns>
@@ -123,7 +164,7 @@ namespace GenealogyTree.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> CreateRelation(int key, RelationRequest relativeRequest)
         {
-            var parentChild = _mapper.Map<ParentChild>(relativeRequest);
+            var parentChild = _mapper.Map<ParentChild>((relativeRequest, key));
             if (await _parentChildRepo.ExistAsync(pc => pc.ParentId == parentChild.ParentId
             && pc.ChildId == parentChild.ChildId))
                 return BadRequest("Relation already exists!");
