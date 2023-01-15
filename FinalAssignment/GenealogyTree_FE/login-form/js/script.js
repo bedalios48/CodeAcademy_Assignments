@@ -1,5 +1,6 @@
 import { callEndpoint } from "../../js/functions.js";
 import { parseJwt } from "../../js/functions.js";
+import { login } from "../../js/functions.js";
 const loginForm = document.querySelector('#login');
 const submitLogin = document.querySelector('#submit-login');
 
@@ -25,21 +26,7 @@ let sendData = async () => {
         return;
     }
 
-    const fetchData = await callEndpoint('https://localhost:7008/api/User/login', 'POST', obj);
-    console.log(fetchData);
-    if (fetchData != null)
-    {
-        localStorage.setItem("token", fetchData.token);
-        const tokenData = parseJwt(fetchData.token);
-        const userId = tokenData.unique_name;
-        const userPerson = await callEndpoint(`https://localhost:7008/api/user/${userId}/person`, 'GET');
-        console.log(userPerson);
-        if(userPerson !== null)
-            localStorage.setItem("person", JSON.stringify(userPerson))
-        else
-            localStorage.setItem("person", null);
-        window.location = '../genealogy-tree/index.html';
-    }
+    login(obj);
 }
 
 submitLogin.addEventListener('click', (e) => {

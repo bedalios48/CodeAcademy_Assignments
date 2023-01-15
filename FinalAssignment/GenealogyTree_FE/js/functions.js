@@ -32,3 +32,49 @@ const parseJwt = (token) => {
   };
 
 export {parseJwt};
+
+const callPost = async (endpoint, obj) => {
+    const settings = {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+    };
+    try {
+        console.log(settings);
+        const fetchResponse = await fetch(endpoint, settings);
+        console.log('response.status: ', fetchResponse.status);
+        console.log(fetchResponse);
+        return fetchResponse;
+    } catch (e) {
+        return e;
+    }
+}
+
+export {callPost};
+
+const login = async (obj) => {
+    const fetchData = await callEndpoint('https://localhost:7008/api/User/login', 'POST', obj);
+    console.log(fetchData);
+    if (fetchData != null)
+    {
+        localStorage.setItem("token", fetchData.token);
+        const tokenData = parseJwt(fetchData.token);
+        const userId = tokenData.unique_name;
+        const userPerson = await callEndpoint(`https://localhost:7008/api/user/${userId}/person`, 'GET');
+        console.log(userPerson);
+        if(userPerson !== null)
+        {
+            localStorage.setItem("person", JSON.stringify(userPerson));
+            localStorage.setItem("user", JSON.stringify(userPerson));
+        }
+        else
+            localStorage.setItem("person", null);
+            localStorage.setItem("user", null);
+        window.location = '../genealogy-tree/index.html';
+    }
+}
+
+export {login} ;
