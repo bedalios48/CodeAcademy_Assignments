@@ -16,6 +16,11 @@ hr {
   margin-bottom: 25px;
 }
 
+.addRelative {
+  display: flex;
+  justify-content: center;
+}
+
 button {
   background-color: #04AA6D;
   color: white;
