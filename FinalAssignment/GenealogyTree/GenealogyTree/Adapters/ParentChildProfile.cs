@@ -11,7 +11,7 @@ namespace GenealogyTree.Adapters
             CreateMap<(RelationRequest relation, int userId), ParentChild>()
                 .ForMember(p => p.ChildId, opt => opt.MapFrom(r => r.relation.ChildId))
                 .ForMember(p => p.ParentId, opt => opt.MapFrom(r => r.relation.ParentId))
-                .ForMember(p => p.ChildId, opt => opt.MapFrom(r => r.relation.ChildId));
+                .ForMember(p => p.CreatedByUserId, opt => opt.MapFrom(r => r.userId));
         }
     }
 }
