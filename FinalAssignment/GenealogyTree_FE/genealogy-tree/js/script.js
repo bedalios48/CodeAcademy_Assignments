@@ -2,7 +2,11 @@ import { callEndpoint } from "../../js/functions.js";
 import { parseJwt } from "../../js/functions.js";
 import { callPost } from "../../js/functions.js";
 const showList = document.querySelector('#showList');
+const hideList = document.querySelector('#hideList');
+hideList.hidden = true;
 const addChild = document.querySelector('#addChild');
+const createProfileButton = document.getElementById('createProfile');
+createProfileButton.hidden = true;
 const addParent = document.querySelector('#addParent');
 const addRelativeForm = document.querySelector('#addRelativeForm');
 addRelativeForm.hidden = true;
@@ -12,11 +16,61 @@ const userId = tokenData.unique_name;
 const person = JSON.parse(localStorage.getItem("person"));
 const user = JSON.parse(localStorage.getItem("user"));
 
-const header = document.getElementById('yourFamilyTree');
-header.innerHTML = `${user.name} ${user.surname}'s Family Tree`;
+if(user === null)
+{
+    addChild.hidden = true;
+    addParent.hidden = true;
+    createProfileButton.hidden = false;
+    createProfileButton.addEventListener('click', () => createProfile());
+}
+else
+{
+    const header = document.getElementById('yourFamilyTree');
+    header.innerHTML = `${user.name} ${user.surname}'s Family Tree`;
+}
+
+const createProfile = async () => {
+    addRelativeForm.hidden = false;
+    const createRelativeButton = document.getElementById("createRelativeSubmit");
+    createRelativeButton.hidden = true;
+    const createProfileButton = document.getElementById("createProfileSubmit");
+    createProfileButton.onclick = submitCreateProfile;
+}
+
+const linkUser = async (personId) => {
+    const settings = {
+        method: 'PUT',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        }
+    };
+    let fetchResponse;
+    try {
+        fetchResponse = await fetch(`https://localhost:7008/api/user/${userId}/linkUser?personId=${personId}`, settings);
+        console.log('response.status: ', fetchResponse.status);
+    } catch (e) {
+        console.log(e);
+    }
+    if (fetchResponse.ok)
+    {
+        addChild.hidden = true;
+    addParent.hidden = true;
+    createProfileButton.hidden = false;
+    await selectPerson(personId, true);
+    }
+}
+
+const hideFamily = () => {
+    const familyTable = document.getElementById('family-members');
+    familyTable.hidden = true;
+    showList.hidden = false;
+    hideList.hidden = true;
+}
 
 let showFamily = async (personId) => {
     const familyTable = document.getElementById('family-members');
+    familyTable.hidden = false;
     familyTable.innerHTML = '<thead><tr><th>Name</th><th>Relation</th></tr></thead>';
     const familyData = await callEndpoint(`https://localhost:7008/api/user/relatives?personId=${personId}`, 'GET');
     console.log(familyData);
@@ -37,25 +91,34 @@ let showFamily = async (personId) => {
             button.addEventListener('click', () => selectPerson(personId));
             btn.appendChild(button);
         }
+        showList.hidden = true;
+        hideList.hidden = false;
 }
 
-const selectPerson = async (personId) => {
+const selectPerson = async (personId, setUser) => {
     const person = await callEndpoint(`https://localhost:7008/api/user/person?personId=${personId}`, 'GET');
     if(person !== null)
-    localStorage.setItem("person", JSON.stringify(person));
+    {
+        localStorage.setItem("person", JSON.stringify(person));
+        if(setUser)
+        localStorage.setItem("user", JSON.stringify(person));
+    }
     else
     localStorage.setItem("person", null);
 
     window.location.reload();
 }
 
-const personTable = document.getElementById('person-info');
-personTable.innerHTML += '<thead><tr><th>Name</th><th>Surname</th><th>Date of birth</th><th>Birth place</th></tr></thead>';
-personTable.innerHTML += `<tbody>
-<th>${person.name}</th>
-<th>${person.surname}</th>
-<th>${person.dateOfBirth}</th>
-<th>${person.birthPlace}</th></tbody>`;
+if(person !== null)
+{
+    const personTable = document.getElementById('person-info');
+    personTable.innerHTML += '<thead><tr><th>Name</th><th>Surname</th><th>Date of birth</th><th>Birth place</th></tr></thead>';
+    personTable.innerHTML += `<tbody>
+    <th>${person.name}</th>
+    <th>${person.surname}</th>
+    <th>${person.dateOfBirth}</th>
+    <th>${person.birthPlace}</th></tbody>`;
+}
 
 let currentRelation = '';
 
@@ -63,6 +126,10 @@ let showAddRelative = (relation) => {
     const header = document.getElementById('header');
     header.innerHTML = `Add ${relation}`;
     addRelativeForm.hidden = false;
+    const createRelativeButton = document.getElementById("createRelativeSubmit");
+    createRelativeButton.onclick = submitEvent;
+    const createProfileButton = document.getElementById("createProfileSubmit");
+    createProfileButton.hidden = true;
     currentRelation = relation;
 }
 
@@ -70,18 +137,13 @@ let addRelative = async () => {
     let data = new FormData(addRelativeForm);
     const personObj = {};
     data.forEach((value, key) => (personObj[key] = value));
-    console.log(data);
-    console.log(personObj);
-    const response = await callPost(`https://localhost:7008/api/user/${userId}/createPerson`, personObj);
-    console.log(response);
-    const fetchData = await response.json();
-    console.log(fetchData);
-    if(response.status === 201)
+    const createResponse = await createNewPerson(personObj);
+    if(createResponse.status === 201)
     {
-        await createRelation(fetchData.personId);
+        await createRelation(createResponse.data.personId);
         addRelativeForm.hidden = true;
     }
-    if(response.status === 400)
+    if(createResponse.status === 400)
     {
         const message = document.getElementById('message');
         addRelativeForm.hidden = true;
@@ -101,16 +163,43 @@ let addRelative = async () => {
             <th>${element.birthPlace}</th>
             <th class="addRelationButton" personId=${element.personId}></th></tbody>`;
         });
-    
-        const addRelationButtons = existingPeopleTable.getElementsByClassName('addRelationButton');
-        for (let btn of addRelationButtons) {
-            let button = document.createElement('button');
-            button.type = 'button';
-            button.innerHTML = 'Add ' + currentRelation;
-            let personId = btn.getAttribute('personId');
-            button.addEventListener('click', () => createRelation(personId));
-            btn.appendChild(button);
-        }
+    }
+}
+
+const createAddRelationButton = () => {
+    const existingPeopleTable = document.getElementById('existing-people');
+    const addRelationButtons = existingPeopleTable.getElementsByClassName('addRelationButton');
+    for (let btn of addRelationButtons) {
+        let button = document.createElement('button');
+        button.type = 'button';
+        button.innerHTML = 'Add ' + currentRelation;
+        let personId = btn.getAttribute('personId');
+        button.addEventListener('click', () => createRelation(personId));
+        btn.appendChild(button);
+    }
+}
+
+const createAddProfileButton = () => {
+    const existingPeopleTable = document.getElementById('existing-people');
+    const addRelationButtons = existingPeopleTable.getElementsByClassName('addRelationButton');
+    for (let btn of addRelationButtons) {
+        let button = document.createElement('button');
+        button.type = 'button';
+        button.innerHTML = 'Select';
+        let personId = btn.getAttribute('personId');
+        button.addEventListener('click', () => linkUser(personId));
+        btn.appendChild(button);
+    }
+}
+
+const createNewPerson = async (personObj) => {
+    const response = await callPost(`https://localhost:7008/api/user/${userId}/createPerson`, personObj);
+    console.log(response);
+    const fetchData = await response.json();
+    console.log(fetchData);
+    return {
+        "status": response.status,
+        "data": fetchData
     }
 }
 
@@ -141,14 +230,23 @@ const createRelation = async (personId) => {
 let submitEvent = async (e) => {
     e.preventDefault();
     await addRelative();
+    createAddRelationButton();
 }
 
-let submitFormButton = document.getElementById("createRelative");
-submitFormButton.onclick = submitEvent;
+let submitCreateProfile = async (e) => {
+    e.preventDefault();
+    await addRelative();
+    createAddProfileButton();
+}
 
 showList.addEventListener('click', (e) => {
     e.preventDefault();
     showFamily(person.personId);
+})
+
+hideList.addEventListener('click', (e) => {
+    e.preventDefault();
+    hideFamily();
 })
 
 addChild.addEventListener('click', (e) => {
@@ -160,3 +258,11 @@ addParent.addEventListener('click', (e) => {
     e.preventDefault();
     showAddRelative('parent');
 })
+
+const logOutButton = document.getElementById("log-out-button");
+logOutButton.onclick = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("person");
+    localStorage.removeItem("token");
+    window.location = '../index.html';
+}

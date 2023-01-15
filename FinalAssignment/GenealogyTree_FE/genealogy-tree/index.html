@@ -12,8 +12,8 @@
 <body>
     <div class="to-do-box">
         <div class="container">
-            <h1>Genealogy Tree</h1>
-            <h2 id="yourFamilyTree">Your Family Tree</h2>
+            <h2 id="yourFamilyTree"></h2>
+            <button type="button" id="createProfile">Create your profile</button>
             <table id="person-info"></table>
             <div class="addRelative">
                 <button type="button" id="addParent">Add parent</button>
@@ -24,7 +24,7 @@
             <form id="addRelativeForm">
                 <div class="container">
                     <h1 id="header"></h1>
-                    <p>Please fill in this form to create a new relative.</p>
+                    <p id="addRelativeInfo">Please fill in this form to create a new relative.</p>
                     <hr>
                     <label id="name-label" for="name"><b>Name</b></label>
                     <input type="text" placeholder="Enter Name" name="name" id="name" required>
@@ -36,7 +36,8 @@
                     <input type="text" placeholder="Enter Birthplace" name="birthPlace" id="birthPlace" required>
                     <hr>
                     <p id="message"></p>
-                    <button type="submit" id="createRelative">Create</button>
+                    <button type="submit" id="createRelativeSubmit">Create</button>
+                    <button type="submit" id="createProfileSubmit">Create</button>
                 </div>
             </form>
             <table id="family-members"></table>

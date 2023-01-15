@@ -26,7 +26,16 @@ let sendData = async () => {
         return;
     }
 
-    login(obj);
+    const status = await login(obj);
+    if (status === 401)
+    {
+        const message = document.getElementById('message');
+        message.innerHTML = `Bad username or password.
+        <a class="register-link">Register</a> or use another credentials`;
+       const messageLink = message.getElementsByClassName("register-link")[0];
+       console.log(messageLink);
+       messageLink.onclick = () => window.location = '../registration-form/index.html';
+    }
 }
 
 submitLogin.addEventListener('click', (e) => {
