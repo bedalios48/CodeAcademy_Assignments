@@ -7,18 +7,9 @@ input {
   background: white;
 }
 
-input.edit-do-do {
-  padding: 10px 0px;
-}
-
 hr {
   border: 1px solid white;
   margin-bottom: 25px;
-}
-
-.addRelative {
-  display: flex;
-  justify-content: center;
 }
 
 button {
@@ -32,12 +23,23 @@ button {
   border-color: white
 }
 
-.form-buttons {
-  display: flex;
-}
-
 button:hover {
   opacity: 1;
+}
+
+a {
+  color: dodgerblue;
+}
+
+a:hover {
+  color: rgb(192, 222, 253);
+  cursor: pointer;
+}
+
+#registration {
+  margin: auto;
+  width: 50%;
+  padding: 3%;
 }
 
 .container {
@@ -45,10 +47,14 @@ button:hover {
   padding: 3%;
 }
 
-.to-do-box {
-  margin: auto;
-  width: 50%;
+.sign-in {
+  background-color: #f1f1f1;
   padding: 3%;
+  text-align: center;
+}
+
+#message {
+  color: red;
 }
 
 .error-message {
