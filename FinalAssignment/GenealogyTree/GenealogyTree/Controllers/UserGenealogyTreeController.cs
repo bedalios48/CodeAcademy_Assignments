@@ -22,11 +22,13 @@ namespace GenealogyTree.Controllers
         private readonly IParentChildRepository _parentChildRepo;
         private readonly ILogger<UserGenealogyTreeController> _logger;
         private readonly IUserRepository _userRepo;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserGenealogyTreeController(IMapper mapper, IRelativeService relativeService
             , IPersonRepository personRepo, IParentChildRepository parentChildRepo,
             ILogger<UserGenealogyTreeController> logger,
-            IUserRepository userRepo)
+            IUserRepository userRepo,
+            IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _relativeService = relativeService;
@@ -34,6 +36,7 @@ namespace GenealogyTree.Controllers
             _parentChildRepo = parentChildRepo;
             _logger = logger;
             _userRepo = userRepo;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -81,6 +84,9 @@ namespace GenealogyTree.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> GetUserPerson(int key)
         {
+            if (!VerifyUser(key))
+                return Forbid();
+
             _logger.LogInformation($"Getting person assigned to user ID {key}");
             var person = await _personRepo.GetAsync(p => p.UserId == key);
             if (person is null)
@@ -148,23 +154,6 @@ namespace GenealogyTree.Controllers
             return Ok(peopleResponse);
         }
 
-        private List<Person> GetFilteredPeople(List<Person> people, FindPersonRequest findPerson)
-        {
-            if (!string.IsNullOrEmpty(findPerson.Name))
-                people = people.Where(p => p.Name == findPerson.Name).ToList();
-
-            if (!string.IsNullOrEmpty(findPerson.Surname))
-                people = people.Where(p => p.Surname == findPerson.Surname).ToList();
-
-            if (findPerson.DateOfBirth is not null)
-                people = people.Where(p => p.DateOfBirth == findPerson.DateOfBirth).ToList();
-
-            if (!string.IsNullOrEmpty(findPerson.BirthPlace))
-                people = people.Where(p => p.BirthPlace == findPerson.BirthPlace).ToList();
-
-            return people;
-        }
-
         /// <summary>
         /// Create new person
         /// </summary>
@@ -177,6 +166,9 @@ namespace GenealogyTree.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> CreatePerson(int key, CreatePersonRequest createPersonRequest)
         {
+            if (!VerifyUser(key))
+                return Forbid();
+
             _logger.LogInformation($"Creating person {JsonConvert.SerializeObject(createPersonRequest)}");
             var person = _mapper.Map<Person>((createPersonRequest, key));
             if (await _personRepo.ExistAsync(p => p.Name == person.Name
@@ -205,6 +197,9 @@ namespace GenealogyTree.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> CreateRelation(int key, RelationRequest relativeRequest)
         {
+            if (!VerifyUser(key))
+                return Forbid();
+
             _logger.LogInformation($"Creating relation {JsonConvert.SerializeObject(relativeRequest)}");
             var parentChild = _mapper.Map<ParentChild>((relativeRequest, key));
             if (await _parentChildRepo.ExistAsync(pc => pc.ParentId == parentChild.ParentId
@@ -231,6 +226,9 @@ namespace GenealogyTree.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<IActionResult> LinkUser(int key, int personId)
         {
+            if (!VerifyUser(key))
+                return Forbid();
+
             _logger.LogInformation($"Creating link between user ID {key} and person ID {personId}");
             var person = await _personRepo.GetAsync(p => p.Id == personId);
             if(person is null)
@@ -263,6 +261,35 @@ namespace GenealogyTree.Controllers
             await _personRepo.UpdateAsync(person);
             _logger.LogInformation("Person linked to the user");
             return Ok();
+        }
+
+        private bool VerifyUser(int key)
+        {
+            var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
+            if (currentUserId != key)
+            {
+                _logger.LogWarning($"User {currentUserId} tried to act as user {key}");
+                return false;
+            }
+
+            return true;
+        }
+
+        private List<Person> GetFilteredPeople(List<Person> people, FindPersonRequest findPerson)
+        {
+            if (!string.IsNullOrEmpty(findPerson.Name))
+                people = people.Where(p => p.Name == findPerson.Name).ToList();
+
+            if (!string.IsNullOrEmpty(findPerson.Surname))
+                people = people.Where(p => p.Surname == findPerson.Surname).ToList();
+
+            if (findPerson.DateOfBirth is not null)
+                people = people.Where(p => p.DateOfBirth == findPerson.DateOfBirth).ToList();
+
+            if (!string.IsNullOrEmpty(findPerson.BirthPlace))
+                people = people.Where(p => p.BirthPlace == findPerson.BirthPlace).ToList();
+
+            return people;
         }
     }
 }
