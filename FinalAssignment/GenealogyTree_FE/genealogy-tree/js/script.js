@@ -20,6 +20,7 @@ if(user === null)
 {
     addChild.hidden = true;
     addParent.hidden = true;
+    showList.hidden = true;
     createProfileButton.hidden = false;
     createProfileButton.addEventListener('click', () => createProfile());
 }
@@ -42,7 +43,8 @@ const linkUser = async (personId) => {
         method: 'PUT',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         }
     };
     let fetchResponse;
@@ -151,9 +153,8 @@ let addRelative = async () => {
         const existingPeopleTable = document.getElementById('existing-people');
         existingPeopleTable.innerHTML += '<thead><th>Name</th><th>Surname</th><th>Date of birth</th>' +
         '<th>Birth place</th></thead>';
-        const foundPeople = await callEndpoint(`https://localhost:7008/api/user/findPeople?
-        Name=${personObj.name}&Surname=${personObj.surname}&DateOfBirth=${personObj.dateOfBirth}&
-        BirthPlace=${personObj.birthPlace}`, 'GET')
+        console.log(personObj);
+        const foundPeople = await callEndpoint(`https://localhost:7008/api/user/findPeople?Name=${personObj.name}&Surname=${personObj.surname}&DateOfBirth=${personObj.dateOfBirth}&BirthPlace=${personObj.birthPlace}`, 'GET')
         
         foundPeople.forEach(element => {
             existingPeopleTable.innerHTML += `<tbody>
@@ -224,7 +225,13 @@ const createRelation = async (personId) => {
     const relationResponse = await callEndpoint(`https://localhost:7008/api/user/${userId}/createRelation`, 'POST', relationObj);
     console.log(relationResponse);
     if (relationResponse !== null)
-    await showFamily(person.personId);
+    {
+        const existingPeopleTable = document.getElementById('existing-people');
+        existingPeopleTable.innerHTML = '';
+        const message = document.getElementById('message');
+        message.innerHTML = '';
+        await showFamily(person.personId);
+    }
 }
 
 let submitEvent = async (e) => {

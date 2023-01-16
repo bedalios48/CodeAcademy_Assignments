@@ -3,7 +3,8 @@ async function callEndpoint(endpoint, method, obj) {
         method: method,
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(obj)
     };
@@ -38,7 +39,8 @@ const callPost = async (endpoint, obj) => {
         method: 'POST',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(obj)
     };
