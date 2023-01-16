@@ -5,6 +5,7 @@ using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Domain.Models;
 using GenealogyTree.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Linq.Expressions;
 
@@ -26,8 +27,9 @@ namespace GenealogyTree.Tests
             _mockJwt = new Mock<IJwtService>();
             _mockPassword = new Mock<IPasswordService>();
             _mockMapper = new Mock<IMapper>();
+            var mockLogger = new Mock<ILogger<UserController>>();
             sut = new UserController(_mockRepo.Object, _mockJwt.Object,
-                _mockPassword.Object, _mockMapper.Object);
+                _mockPassword.Object, _mockMapper.Object, mockLogger.Object);
         }
 
         [TestMethod]
