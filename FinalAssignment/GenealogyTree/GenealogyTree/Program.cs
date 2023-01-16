@@ -32,6 +32,8 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddTransient<IRelativeService, RelativeService>();
 builder.Services.AddTransient<IRelativeServiceProvider, RelativeServiceProvider>();
 
+builder.Services.AddHttpContextAccessor();
+
 var key = builder.Configuration["ApiSetting:Secret"];
 
 builder.Services.AddAuthentication(x =>
