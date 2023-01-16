@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoginForm</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <form id="login">
+        <div class="container">
+            <h1>Log In</h1>
+            <p>Enter your credentials</p>
+            <hr>
+
+            <label id="username-label" for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" id="username" required>
+
+            <label id="password-label" for="password"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" id="password" required>
+            <p id="message"></p>
+            <hr>
+            <button type="submit" id="submit-login">Log In</button>
+        </div>
+    </form>
+    <script type="module" src="js/script.js"></script>
+</body>
+
+</html>

@@ -6,6 +6,7 @@ using GenealogyTree.Infrastructure.Data;
 using GenealogyTree.Infrastructure.Repositories;
 using GenealogyTree.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddTransient<IRelativeService, RelativeService>();
+builder.Services.AddTransient<IRelativeServiceProvider, RelativeServiceProvider>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -36,6 +38,15 @@ builder.Services.AddSwaggerGen(option =>
     option.IncludeXmlComments(xmlPath);
 });
 
+builder.Services.AddCors(p => p.AddPolicy("corsfordish", builder =>
+{
+    builder.WithOrigins("*")
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+}));
+
+builder.Host.UseNLog();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,6 +55,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("corsfordish");
 
 app.UseHttpsRedirection();
 

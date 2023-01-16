@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenealogyTree", "GenealogyTree\GenealogyTree.csproj", "{18DBFF63-410E-41AA-9545-4D2705A53078}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenealogyTree", "GenealogyTree\GenealogyTree.csproj", "{18DBFF63-410E-41AA-9545-4D2705A53078}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenealogyTree.Domain", "GenealogyTree.Domain\GenealogyTree.Domain.csproj", "{D7DB93B2-5C97-4EFC-B607-581ABB59672D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenealogyTree.Domain", "GenealogyTree.Domain\GenealogyTree.Domain.csproj", "{D7DB93B2-5C97-4EFC-B607-581ABB59672D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenealogyTree.Infrastructure", "GenealogyTree.Infrastructure\GenealogyTree.Infrastructure.csproj", "{A7BF3D88-3CB0-46DC-A8AB-DB79BA39CEE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenealogyTree.Infrastructure", "GenealogyTree.Infrastructure\GenealogyTree.Infrastructure.csproj", "{A7BF3D88-3CB0-46DC-A8AB-DB79BA39CEE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenealogyTree.Tests", "GenealogyTree.Tests\GenealogyTree.Tests.csproj", "{1D0089AA-1D82-4EED-997E-20FEA69DEAAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{A7BF3D88-3CB0-46DC-A8AB-DB79BA39CEE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7BF3D88-3CB0-46DC-A8AB-DB79BA39CEE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7BF3D88-3CB0-46DC-A8AB-DB79BA39CEE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D0089AA-1D82-4EED-997E-20FEA69DEAAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D0089AA-1D82-4EED-997E-20FEA69DEAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D0089AA-1D82-4EED-997E-20FEA69DEAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D0089AA-1D82-4EED-997E-20FEA69DEAAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
