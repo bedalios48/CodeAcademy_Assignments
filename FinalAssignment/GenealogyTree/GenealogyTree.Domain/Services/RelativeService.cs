@@ -7,67 +7,27 @@ namespace GenealogyTree.Domain.Services
     public class RelativeService : IRelativeService
     {
         private readonly IPersonRepository _personRepository;
-        private readonly IParentChildRepository _parentChildRepository;
-        public RelativeService(IPersonRepository personRepository, IParentChildRepository parentChildRepository)
+        private readonly IRelativeServiceProvider _provider;
+        public RelativeService(IPersonRepository personRepository, IRelativeServiceProvider provider)
         {
             _personRepository = personRepository;
-            _parentChildRepository = parentChildRepository;
+            _provider = provider;
         }
-        public async Task<MainRelative> GetMainRelative(int personId)
+        public async Task<MainRelative> GetMainRelativeAsync(int personId)
         {
             var person = await _personRepository.GetAsync(p => p.Id == personId);
             var mainRelative = new MainRelative(person);
-            var children = await GetChildren(person.Id, "child");
+            var children = await _provider.GetChildrenAsync(personId, 1);
             mainRelative.Relatives.AddRange(children);
-            var grandChildren = children.Select(async c => await GetChildren(c.Person.Id, "grandchild"))
-                .SelectMany(task => task.Result);
+            var grandChildren = await _provider.GetChildrenAsync(personId, 2);
             mainRelative.Relatives.AddRange(grandChildren);
-            var parents = await GetParents(person.Id, "parent");
+            var parents = await _provider.GetParentsAsync(personId, 1);
             mainRelative.Relatives.AddRange(parents);
-            var siblings = await GetSiblings(parents, personId);
+            var siblings = await _provider.GetSiblingsAsync(personId);
             mainRelative.Relatives.AddRange(siblings);
-            var grandParents = parents.Select(async c => await GetParents(c.Person.Id, "grandparent"))
-                .SelectMany(task => task.Result); ;
+            var grandParents = await _provider.GetParentsAsync(personId, 2);
             mainRelative.Relatives.AddRange(grandParents);
             return mainRelative;
-        }
-
-        private async Task<IEnumerable<Relative>> GetChildren(int parentId, string relation)
-        {
-            var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ParentId == parentId,
-                pc => pc.Child);
-            return parentChildren.Select(pc => new Relative(pc.Child, relation));
-        }
-
-        private async Task<IEnumerable<Relative>> GetParents(int childId, string relation)
-        {
-            var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ChildId == childId,
-                pc => pc.Parent);
-            return parentChildren.Select(pc => new Relative(pc.Parent, relation));
-        }
-
-        private async Task<IEnumerable<Relative>> GetSiblings(IEnumerable<Relative> parents, int personId)
-        {
-            var childrenIds = new List<int>();
-            foreach (var parent in parents)
-            {
-                var parentChildren = await _parentChildRepository.GetAllAsync(pc => pc.ParentId == parent.Person.Id
-                && pc.ChildId != personId);
-                childrenIds.AddRange(parentChildren.Select(pc => pc.ChildId));
-            }
-
-            childrenIds = childrenIds.Distinct().ToList();
-            var relatives = new List<Relative>();
-            foreach (var childId in childrenIds)
-            {
-                var childParents = await _parentChildRepository.GetAllAsync(pc => pc.ChildId == childId);
-                var relation = childParents.Count() == parents.Count() ? "sibling" : "half-sibling";
-                var person = await _personRepository.GetAsync(p => p.Id == childId);
-                var relative = new Relative(person, relation);
-                relatives.Add(relative);
-            }
-
-            return relatives;
         }
     }
 }
