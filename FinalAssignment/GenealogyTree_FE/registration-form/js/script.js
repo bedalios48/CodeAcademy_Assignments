@@ -3,15 +3,30 @@ const registration = document.querySelector('#registration');
 const register = document.querySelector('#register');
 const message = document.getElementById('message');
 
+const addLoginLink = (element) => element.onclick = () => window.location = '../login-form/index.html';
+const signInLinks = document.getElementsByClassName("sign-in-link");
+for (let link of signInLinks) addLoginLink(link);
+
 const registerUser = async () => {
     const errorMessages = document.querySelectorAll(".error-message");
-    for (m of errorMessages) {
+    for (let m of errorMessages) {
         m.parentElement.removeChild(m);
     }
     message.innerHTML = '';
     let data = new FormData(registration);
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
+    if (obj.userName === "" || obj.password === "") {
+        if (obj.userName === "") {
+            const usernameLabel = document.getElementById('username-label');
+            usernameLabel.innerHTML += '<span class="error-message">\xa0\xa0\xa0\xa0\xa0Username mandatory!</span>';
+        }
+        if (obj.password === "") {
+            const passwordLabel = document.getElementById('password-label');
+            passwordLabel.innerHTML += '<span class="error-message">\xa0\xa0\xa0\xa0\xa0Password mandatory!</span>';
+        }
+        return;
+    }
     obj["role"] = 'external';
     const response = await callPost('https://localhost:7008/api/User/register', obj);
     if(response.status === 400) {
@@ -35,15 +50,10 @@ const registerUser = async () => {
         return;
     }
     delete obj.role;
-    login(obj);
+    await login(obj);
 };
 
 register.addEventListener('click', (e) => {
     e.preventDefault();
     registerUser();
 })
-
-const addLoginLink = (element) => element.onclick = () => window.location = '../login-form/index.html';
-
-const signInLinks = document.getElementsByClassName("sign-in-link");
-for (link of signInLinks) addLoginLink(link);
