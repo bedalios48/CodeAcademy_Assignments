@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using NLog;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GenealogyTree.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserGenealogyTreeController : ControllerBase
     {
         private readonly IRelativeService _relativeService;
