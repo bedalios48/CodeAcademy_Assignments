@@ -18,6 +18,7 @@ namespace GenealogyTree.Tests
         private Mock<IMapper> _mockMapper;
         private Mock<IPersonRepository> _mockPerson;
         private Mock<IParentChildRepository> _mockParentChild;
+        private Mock<IUserRepository> _mockUser;
         private UserGenealogyTreeController sut;
 
         [TestInitialize]
@@ -27,9 +28,10 @@ namespace GenealogyTree.Tests
             _mockMapper = new Mock<IMapper>();
             _mockPerson = new Mock<IPersonRepository>();
             _mockParentChild = new Mock<IParentChildRepository>();
+            _mockUser = new Mock<IUserRepository>();
             var mockLogger = new Mock<ILogger<UserGenealogyTreeController>>();
             sut = new UserGenealogyTreeController(_mockMapper.Object, _mockRelative.Object,
-                _mockPerson.Object, _mockParentChild.Object, mockLogger.Object);
+                _mockPerson.Object, _mockParentChild.Object, mockLogger.Object, _mockUser.Object);
         }
 
         [TestMethod]
