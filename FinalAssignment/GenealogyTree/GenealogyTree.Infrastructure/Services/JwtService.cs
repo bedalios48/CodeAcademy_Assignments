@@ -26,8 +26,7 @@ namespace GenealogyTree.Infrastructure.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, userId.ToString()),
-                    new Claim(ClaimTypes.Role, role),
-                    new Claim("user_level", "5"),
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
