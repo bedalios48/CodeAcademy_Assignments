@@ -12,5 +12,6 @@ namespace GenealogyTree.Domain.Models
         public virtual Person Person { get; set; }
         public virtual List<Person> CreatedPeople { get; set; }
         public virtual List<ParentChild> CreatedRelations { get; set; }
+        public virtual List<Marriage> AddedMarriages { get; set; }
     }
 }
