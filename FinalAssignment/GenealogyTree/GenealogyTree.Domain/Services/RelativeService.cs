@@ -27,6 +27,8 @@ namespace GenealogyTree.Domain.Services
             mainRelative.Relatives.AddRange(siblings);
             var grandParents = await _provider.GetParentsAsync(personId, 2);
             mainRelative.Relatives.AddRange(grandParents);
+            var spouses = await _provider.GetSpousesAsync(personId);
+            mainRelative.Relatives.AddRange(spouses);
             return mainRelative;
         }
     }

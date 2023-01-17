@@ -3,6 +3,7 @@ using System;
 using GenealogyTree.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,47 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenealogyTree.Infrastructure.Migrations
 {
     [DbContext(typeof(GenealogyTreeContext))]
-    partial class GenealogyTreeContextModelSnapshot : ModelSnapshot
+    [Migration("20230117124249_PersonSex")]
+    partial class PersonSex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
-
-            modelBuilder.Entity("GenealogyTree.Domain.Models.Marriage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("AreDivorced")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("DivorcedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("MarriedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SpouseId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByUserId");
-
-                    b.HasIndex("PersonId");
-
-                    b.HasIndex("SpouseId");
-
-                    b.ToTable("Spouses");
-                });
 
             modelBuilder.Entity("GenealogyTree.Domain.Models.ParentChild", b =>
                 {
@@ -145,33 +113,6 @@ namespace GenealogyTree.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GenealogyTree.Domain.Models.Marriage", b =>
-                {
-                    b.HasOne("GenealogyTree.Domain.Models.User", "CreatedByUser")
-                        .WithMany("AddedMarriages")
-                        .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("GenealogyTree.Domain.Models.Person", "Person")
-                        .WithMany("Spouses")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("GenealogyTree.Domain.Models.Person", "SpousePerson")
-                        .WithMany("Marriages")
-                        .HasForeignKey("SpouseId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("Person");
-
-                    b.Navigation("SpousePerson");
-                });
-
             modelBuilder.Entity("GenealogyTree.Domain.Models.ParentChild", b =>
                 {
                     b.HasOne("GenealogyTree.Domain.Models.Person", "Child")
@@ -220,17 +161,11 @@ namespace GenealogyTree.Infrastructure.Migrations
                 {
                     b.Navigation("Children");
 
-                    b.Navigation("Marriages");
-
                     b.Navigation("Parents");
-
-                    b.Navigation("Spouses");
                 });
 
             modelBuilder.Entity("GenealogyTree.Domain.Models.User", b =>
                 {
-                    b.Navigation("AddedMarriages");
-
                     b.Navigation("CreatedPeople");
 
                     b.Navigation("CreatedRelations");

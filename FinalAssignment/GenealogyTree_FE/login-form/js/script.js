@@ -1,5 +1,3 @@
-import { callEndpoint } from "../../js/functions.js";
-import { parseJwt } from "../../js/functions.js";
 import { login } from "../../js/functions.js";
 const loginForm = document.querySelector('#login');
 const submitLogin = document.querySelector('#submit-login');

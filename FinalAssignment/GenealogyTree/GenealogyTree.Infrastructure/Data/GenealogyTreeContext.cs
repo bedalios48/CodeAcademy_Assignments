@@ -1,4 +1,5 @@
-﻿using GenealogyTree.Domain.Models;
+﻿using GenealogyTree.Domain.Enums;
+using GenealogyTree.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GenealogyTree.Infrastructure.Data
@@ -13,6 +14,7 @@ namespace GenealogyTree.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<ParentChild> ParentsChildren { get; set; }
+        public DbSet<Marriage> Spouses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +26,10 @@ namespace GenealogyTree.Infrastructure.Data
 
             modelBuilder.Entity<Person>()
                 .HasOne(x => x.User);
+
+            modelBuilder.Entity<Person>().Property(x => x.Sex)
+                .HasConversion(v => v.ToString(), v => string.IsNullOrEmpty(v) ? ESex.Other : (ESex)Enum.Parse(typeof(ESex), v))
+                .IsRequired();
 
             modelBuilder.Entity<ParentChild>()
                 .HasOne(x => x.Parent)
@@ -46,6 +52,24 @@ namespace GenealogyTree.Infrastructure.Data
             modelBuilder.Entity<Person>()
                 .HasOne(x => x.CreatedByUser)
                 .WithMany(x => x.CreatedPeople)
+                .HasForeignKey(u => u.CreatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Marriage>()
+                .HasOne(x => x.Person)
+                .WithMany(x => x.Spouses)
+                .HasForeignKey(x => x.PersonId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Marriage>()
+                .HasOne(x => x.SpousePerson)
+                .WithMany(x => x.Marriages)
+                .HasForeignKey(u => u.SpouseId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Marriage>()
+                .HasOne(x => x.CreatedByUser)
+                .WithMany(x => x.AddedMarriages)
                 .HasForeignKey(u => u.CreatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }

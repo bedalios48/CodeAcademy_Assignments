@@ -3,7 +3,8 @@ async function callEndpoint(endpoint, method, obj) {
         method: method,
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(obj)
     };
@@ -12,10 +13,11 @@ async function callEndpoint(endpoint, method, obj) {
         const fetchResponse = await fetch(endpoint, settings);
         console.log('response.status: ', fetchResponse.status);
         console.log(fetchResponse);
-        if(!fetchResponse.ok)
-            return null;
         const fetchData = await fetchResponse.json();
-        return fetchData;
+        return {
+            status: fetchResponse.status,
+            data: fetchData
+        };
     } catch (e) {
         return e;
     }
@@ -38,7 +40,8 @@ const callPost = async (endpoint, obj) => {
         method: 'POST',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(obj)
     };
@@ -82,10 +85,10 @@ const login = async (obj) => {
         const userId = tokenData.unique_name;
         const userPerson = await callEndpoint(`https://localhost:7008/api/user/${userId}/person`, 'GET');
         console.log(userPerson);
-        if(userPerson !== null)
+        if(userPerson.status === 200)
         {
-            localStorage.setItem("person", JSON.stringify(userPerson));
-            localStorage.setItem("user", JSON.stringify(userPerson));
+            localStorage.setItem("person", JSON.stringify(userPerson.data));
+            localStorage.setItem("user", JSON.stringify(userPerson.data));
         }
         else
         {
@@ -93,7 +96,7 @@ const login = async (obj) => {
             localStorage.setItem("user", null);
         }
 
-        window.location = '../genealogy-tree/index.html';
+        window.location = '../user-interface/index.html';
     }
 }
 
