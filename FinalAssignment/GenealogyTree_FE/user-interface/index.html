@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenealogyTree</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="to-do-box">
+        <div class="container">
+            <h2 id="yourFamilyTree"></h2>
+            <table id="personInfo"></table>
+            <div id="addRelative">
+                <button hidden="true" type="button" id="addParent">Add parent</button>
+                <button hidden="true" type="button" id="addChild">Add child</button>
+            </div>
+            <p id="error-message"></p>
+            <table id="existing-people"></table>
+            <form hidden="true" id="personForm">
+                <div class="container">
+                    <h1 id="header"></h1>
+                    <p id="personFormInfo"></p>
+                    <hr>
+                    <label id="name-label" for="name"><b>Name</b></label>
+                    <input type="text" placeholder="Enter Name" name="name" id="name" required>
+                    <label id="surname-label" for="surname"><b>Surname</b></label>
+                    <input type="text" placeholder="Enter Surname" name="surname" id="surname" required>
+                    <label id="date-label" for="dateOfBirth"><b>Date of birth</b></label>
+                    <input type="date" placeholder="Enter Date of Birth" name="dateOfBirth" id="date" required>
+                    <label id="birthplace-label" for="birthPlace"><b>Birthplace</b></label>
+                    <input type="text" placeholder="Enter Birthplace" name="birthPlace" id="birthPlace" required>
+                    <hr>
+                    <button type="submit" id="createPersonSubmit">Create</button>
+                </div>
+            </form>
+            <table hidden="true" id="peopleTable"></table>
+            <button hidden="true" type="button" id="showList">Show list</button>
+            <button hidden="true" type="button" id="hideList">Hide list</button>
+            <button type="button" id="logOutButton">Log out</button>
+        </div>
+    </div>
+    <script type="module" src="js/script.js"></script>
+</body>
+
+</html>

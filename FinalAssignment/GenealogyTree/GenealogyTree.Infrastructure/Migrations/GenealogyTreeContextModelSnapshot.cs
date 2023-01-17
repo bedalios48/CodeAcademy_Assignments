@@ -26,12 +26,17 @@ namespace GenealogyTree.Infrastructure.Migrations
                     b.Property<int>("ChildId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("ParentId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChildId");
+
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("ParentId");
 
@@ -46,6 +51,9 @@ namespace GenealogyTree.Infrastructure.Migrations
 
                     b.Property<string>("BirthPlace")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("TEXT");
@@ -62,6 +70,8 @@ namespace GenealogyTree.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -104,6 +114,12 @@ namespace GenealogyTree.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("GenealogyTree.Domain.Models.User", "CreatedByUser")
+                        .WithMany("CreatedRelations")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("GenealogyTree.Domain.Models.Person", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
@@ -112,14 +128,24 @@ namespace GenealogyTree.Infrastructure.Migrations
 
                     b.Navigation("Child");
 
+                    b.Navigation("CreatedByUser");
+
                     b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("GenealogyTree.Domain.Models.Person", b =>
                 {
+                    b.HasOne("GenealogyTree.Domain.Models.User", "CreatedByUser")
+                        .WithMany("CreatedPeople")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("GenealogyTree.Domain.Models.User", "User")
                         .WithOne("Person")
                         .HasForeignKey("GenealogyTree.Domain.Models.Person", "UserId");
+
+                    b.Navigation("CreatedByUser");
 
                     b.Navigation("User");
                 });
@@ -133,6 +159,10 @@ namespace GenealogyTree.Infrastructure.Migrations
 
             modelBuilder.Entity("GenealogyTree.Domain.Models.User", b =>
                 {
+                    b.Navigation("CreatedPeople");
+
+                    b.Navigation("CreatedRelations");
+
                     b.Navigation("Person")
                         .IsRequired();
                 });

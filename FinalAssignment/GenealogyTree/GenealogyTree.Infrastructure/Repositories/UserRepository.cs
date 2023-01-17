@@ -1,23 +1,28 @@
-﻿using GenealogyTree.Domain.Interfaces.IRepositories;
+﻿using GenealogyTree.Domain.Interfaces;
+using GenealogyTree.Domain.Interfaces.IRepositories;
 using GenealogyTree.Domain.Models;
+using GenealogyTree.Infrastructure.Data;
 
 namespace GenealogyTree.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
-        public Task<bool> ExistsAsync(string userName)
+        private readonly IPasswordService _password;
+        public UserRepository(GenealogyTreeContext db, IPasswordService password) : base(db)
         {
-            throw new NotImplementedException();
+            _password = password;
         }
 
-        public Task<int> Register(User user)
+        public async Task<User?> TryLoginAsync(string userName, string password)
         {
-            throw new NotImplementedException();
-        }
+            var user = await GetAsync(u => u.UserName == userName);
+            if(user is null)
+                return null;
 
-        public Task<bool> TryLoginAsync(string userName, string password, out User user)
-        {
-            throw new NotImplementedException();
+            if(_password.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+                return user;
+
+            return null;
         }
     }
 }
