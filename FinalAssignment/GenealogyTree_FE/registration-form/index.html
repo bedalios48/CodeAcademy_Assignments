@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegistrationForm</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <form id="registration">
+        <div class="container">
+            <h1>Register</h1>
+            <p>Please fill in this form to create an account.</p>
+            <hr>
+            <label id="username-label" for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="userName" id="username" required>
+
+            <label id="password-label" for="password"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" id="password" required>
+            <hr>
+            <p id="message"></p>
+            <button type="submit" id="register">Register</button>
+        </div>
+
+        <div class="sign-in">
+            <p>Already have an account? <a class="sign-in-link">Sign in</a>.</p>
+        </div>
+    </form>
+    <script type="module" src="js/script.js"></script>
+</body>
+
+</html>
