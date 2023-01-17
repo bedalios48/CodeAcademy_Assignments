@@ -126,9 +126,8 @@ const offerExistingPerson = async (result, obj) => {
     table.innerHTML = "<thead><tr><th>Name</th><th>Surname</th><th>Date of birth</th><th>Birth place</th></tr></thead>";
     const foundPeople = await callEndpoint(`https://localhost:7008/api/user/findPeople?` + 
     `Name=${obj.name}&Surname=${obj.surname}&DateOfBirth=${obj.dateOfBirth}&BirthPlace=${obj.birthPlace}`, 'GET');
-    console.log(foundPeople);
-    console.log(foundPeople);
-    for(let el of foundPeople)
+    console.log(foundPeople.data)
+    for(let el of foundPeople.data)
     {
         let dateOfBirth = "";
         console.log("el: "+el)
@@ -212,14 +211,14 @@ const addRelation = async (personId) => {
     console.log(obj);
     const response = await callEndpoint(`https://localhost:7008/api/user/${userId}/createRelation`, 'POST', obj);
     console.log(response);
-    if(response !== null)
+    if(response.status === 201)
     {
         table.hidden = true;
         form.hidden = true;
         window.location.reload();
         return;
     }
-    message.innerHTML = response;
+    message.innerHTML = response.data;
 }
 
 const hideExistingPerson = () => {
@@ -230,11 +229,11 @@ const hideExistingPerson = () => {
 
 const setPerson = async (personId, setUser = false) => {
     const response = await callEndpoint(`https://localhost:7008/api/user/person?personId=${personId}`, 'GET');
-    if(response !== null)
+    if(response.status === 200)
     {
-        localStorage.setItem("person", JSON.stringify(response));
+        localStorage.setItem("person", JSON.stringify(response.data));
         if(setUser)
-        localStorage.setItem("user", JSON.stringify(response));
+        localStorage.setItem("user", JSON.stringify(response.data));
         window.location.reload();
         return true;
     }
@@ -262,11 +261,11 @@ const showFamilyList = async () => {
 
 const showFamily = async (personId) => {
     const familyData = await callEndpoint(`https://localhost:7008/api/user/relatives?personId=${personId}`, 'GET');
-    if(familyData !== null)
+    if(familyData.status === 200)
     {
         table.hidden = false;
         table.innerHTML = '<thead><tr><th>Name</th><th>Relation</th></tr></thead>';
-        familyData.forEach(element => {
+        familyData.data.forEach(element => {
             table.innerHTML += `<tbody><tr></tr>
             <th>${element.nameSurname}</th>
             <th>${element.relation}</th>
