@@ -24,6 +24,7 @@ builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddAutoMapper(typeof(RelativeProfile));
 builder.Services.AddAutoMapper(typeof(ParentChildProfile));
 builder.Services.AddAutoMapper(typeof(PersonProfile));
+builder.Services.AddAutoMapper(typeof(MarriageProfile));
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IParentChildRepository, ParentChildRepository>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();

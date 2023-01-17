@@ -17,9 +17,6 @@ namespace GenealogyTree.Tests
     {
         private Mock<IRelativeService> _mockRelative;
         private Mock<IMapper> _mockMapper;
-        private Mock<IPersonRepository> _mockPerson;
-        private Mock<IParentChildRepository> _mockParentChild;
-        private Mock<IUserRepository> _mockUser;
         private Mock<IUnitOfWork> _mockRepo;
         private UserGenealogyTreeController sut;
 
@@ -28,23 +25,19 @@ namespace GenealogyTree.Tests
         {
             _mockRelative = new Mock<IRelativeService>();
             _mockMapper = new Mock<IMapper>();
-            _mockPerson = new Mock<IPersonRepository>();
-            _mockParentChild = new Mock<IParentChildRepository>();
-            _mockUser = new Mock<IUserRepository>();
             _mockRepo = new Mock<IUnitOfWork>();
             var mockLogger = new Mock<ILogger<UserGenealogyTreeController>>();
             var mockHttp = new Mock<IHttpContextAccessor>();
 
             sut = new UserGenealogyTreeController(_mockMapper.Object, _mockRelative.Object,
-                _mockPerson.Object, _mockParentChild.Object, mockLogger.Object, _mockUser.Object, mockHttp.Object,
-                _mockRepo.Object);
+                mockLogger.Object, mockHttp.Object, _mockRepo.Object);
         }
 
         [TestMethod]
         public async Task GetCloseRelatives_ReturnsBadRequestForNonExistantPerson()
         {
             var fake = 0;
-            _mockPerson.Setup(p => p.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
+            _mockRepo.Setup(p => p.Person.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
                 .ReturnsAsync(false);
             var actual = await sut.GetCloseRelatives(fake);
             Assert.IsInstanceOfType(actual, typeof(BadRequestObjectResult));
@@ -55,7 +48,7 @@ namespace GenealogyTree.Tests
         {
             var fake = 0;
             var fakeMainRelative = new MainRelative(new Person());
-            _mockPerson.Setup(p => p.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
+            _mockRepo.Setup(p => p.Person.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
                 .ReturnsAsync(true);
             _mockRelative.Setup(r => r.GetMainRelativeAsync(It.IsAny<int>()))
                 .ReturnsAsync(fakeMainRelative);
@@ -69,7 +62,7 @@ namespace GenealogyTree.Tests
             var fake = 0;
             var fakeMainRelative = new MainRelative(new Person());
             fakeMainRelative.Relatives.Add(new Relative(new Person(), ""));
-            _mockPerson.Setup(p => p.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
+            _mockRepo.Setup(p => p.Person.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
                 .ReturnsAsync(true);
             _mockRelative.Setup(r => r.GetMainRelativeAsync(It.IsAny<int>()))
                 .ReturnsAsync(fakeMainRelative);
@@ -88,7 +81,7 @@ namespace GenealogyTree.Tests
             {
                 NameSurname = expected
             };
-            _mockPerson.Setup(p => p.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
+            _mockRepo.Setup(p => p.Person.ExistAsync(It.IsAny<Expression<Func<Person, bool>>>()))
                 .ReturnsAsync(true);
             _mockRelative.Setup(r => r.GetMainRelativeAsync(It.IsAny<int>()))
                 .ReturnsAsync(fakeMainRelative);

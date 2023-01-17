@@ -137,9 +137,14 @@ const offerExistingPerson = async (result, obj) => {
     message.innerHTML += "<br/>Do you want to use this person?";
     form.hidden = true;
     table.hidden = false;
+    let endpoint = `https://localhost:7008/api/user/findPeople?` + 
+    `Name=${obj.name}&Surname=${obj.surname}`;
+    if(obj.dateOfBirth !== "")
+    endpoint+= `&DateOfBirth=${obj.dateOfBirth}`;
+    if(obj.birthPlace !== "")
+    endpoint += `&BirthPlace=${obj.birthPlace}`;
     table.innerHTML = "<thead><tr><th>Name</th><th>Surname</th><th>Date of birth</th><th>Birth place</th></tr></thead>";
-    const foundPeople = await callEndpoint(`https://localhost:7008/api/user/findPeople?` + 
-    `Name=${obj.name}&Surname=${obj.surname}&DateOfBirth=${obj.dateOfBirth}&BirthPlace=${obj.birthPlace}`, 'GET');
+    const foundPeople = await callEndpoint(endpoint, 'GET');
     for(let el of foundPeople.data)
     {
         let dateOfBirth = "";
