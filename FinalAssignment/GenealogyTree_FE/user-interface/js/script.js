@@ -8,6 +8,7 @@ const userId =  tokenData.unique_name;
 const user = JSON.parse(localStorage.getItem("user"));
 
 const form = document.getElementById("personForm");
+const marriageForm = document.getElementById("marriageForm");
 
 const message = document.getElementById("error-message");
 
@@ -17,6 +18,9 @@ const person = JSON.parse(localStorage.getItem("person"));
 
 const addChildButton = document.getElementById("addChild");
 const addParentButton = document.getElementById("addParent");
+const addSpouseButton = document.getElementById("addSpouse");
+
+const addMarriageButton = document.getElementById("addMarriageSubmit");
 
 const showListButton = document.getElementById("showList");
 
@@ -24,13 +28,19 @@ const hideListButton = document.getElementById("hideList");
 
 let isUserEmpty = false;
 let addChild = false;
+let addSpouse = false;
 
 
 // event listeners
 const submitButton = document.getElementById("createPersonSubmit");
-submitButton.addEventListener("click", (e) => {
+submitButton.addEventListener("click", async (e) => {
     e.preventDefault();
-    createPerson(linkPerson);
+    const resultPersonId = await createPerson();
+    if(addSpouse && resultPersonId !== 0)
+    {
+        console.log("adding spouse")
+        await addMarriage(resultPersonId);
+    }
 });
 
 const logoutButton = document.getElementById("logOutButton");
@@ -55,6 +65,13 @@ addParentButton.addEventListener("click", () => {
     info.innerHTML = "Please fill in this form to create parent";
 })
 
+addSpouseButton.addEventListener("click", () => {
+    addSpouse = true;
+    form.hidden = false;
+    const info = document.getElementById("personFormInfo");
+    info.innerHTML = "Please fill in this form to add spouse";
+})
+
 showListButton.addEventListener("click", (e) => {
     e.preventDefault();
     showListButton.hidden = true;
@@ -71,19 +88,19 @@ hideListButton.addEventListener("click", (e) => {
 
 // functions
 const createPerson = async () => {
-    const obj = createFormObject();
+    const obj = createFormObject(form);
     const result = await submitForm(obj);
     console.log(result.data);
     if(result.status === 409)
     {
         await offerExistingPerson(result, obj);
         createAllButtons();
-        return;
+        return 0;
     }
     if(result.status === 400)
     {
         message.innerHTML = result.data;
-        return;
+        return 0;
     }
     if(result.status === 201)
     {
@@ -93,14 +110,20 @@ const createPerson = async () => {
             await linkPerson(result.data.personId);
             return;
         }
+        if(addSpouse)
+        {
+            console.log("add spouse");
+            return result.data.personId;
+        }
         await addRelation(result.data.personId);
-        return;
+        return result.data.personId;
     }
     console.log(result.data);
 }
 
-const createFormObject = () => {
-    let data = new FormData(form);
+const createFormObject = (f) => {
+    let data = new FormData(f);
+    console.log(data);
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
     console.log(obj);
@@ -146,6 +169,11 @@ const offerExistingPerson = async (result, obj) => {
 const createAllButtons = () => {
     if(isUserEmpty) {
         createButtons("linkPersonButton", "Use", "personId", linkPerson);
+        createButtons("cancelButton", "Cancel", null, hideExistingPerson);
+        return;
+    }
+    if(addSpouse) {
+        createButtons("linkPersonButton", "Use", "personId", addMarriage);
         createButtons("cancelButton", "Cancel", null, hideExistingPerson);
         return;
     }
@@ -274,6 +302,43 @@ const showFamily = async (personId) => {
     }
 }
 
+const addMarriage = async (spouseId) => {
+    console.log("adding marriage")
+    console.log(isUserEmpty)
+    console.log(addSpouse)
+    form.hidden = false;
+    table.hidden = true;
+    marriageForm.hidden = false;
+    form.hidden = true;
+    addMarriageButton.addEventListener('click', async () => await submitMarriage(spouseId));
+}
+
+const submitMarriage = async (spouseId) => {
+    const obj = createFormObject(marriageForm);
+    if (document.getElementById("areDivorced").checked) {
+        obj.areDivorced = true;
+      }
+      else {
+        obj.areDivorced = false;
+      }
+    obj.personId = person.personId;
+    obj.spouseId = spouseId;
+    console.log(obj);
+    const response = await callPost(`https://localhost:7008/api/user/${userId}/addMarriage`, obj);
+    console.log(response);
+    const fetchData = await response.json();
+    if(response.status === 400)
+    {
+        message.innerHTML = fetchData;
+    }
+    if(response.status === 201)
+    {
+        addSpouse = false;
+        window.location.reload();
+    }
+    console.log(fetchData);
+}
+
 // logic
 if(user === null)
 {
@@ -289,5 +354,6 @@ if(user !== null && person !== null)
     await showPersoninfo();
     addChildButton.hidden = false;
     addParentButton.hidden = false;
+    addSpouseButton.hidden = false;
     showListButton.hidden = false;
 }
