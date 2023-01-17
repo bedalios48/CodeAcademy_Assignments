@@ -31,6 +31,8 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddTransient<IRelativeService, RelativeService>();
 builder.Services.AddTransient<IRelativeServiceProvider, RelativeServiceProvider>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMarriageRepository, MarriageRepository>();
 
 builder.Services.AddHttpContextAccessor();
 

@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using GenealogyTree.DTO;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
 namespace GenealogyTree.Tests
 {
@@ -19,6 +20,7 @@ namespace GenealogyTree.Tests
         private Mock<IPersonRepository> _mockPerson;
         private Mock<IParentChildRepository> _mockParentChild;
         private Mock<IUserRepository> _mockUser;
+        private Mock<IUnitOfWork> _mockRepo;
         private UserGenealogyTreeController sut;
 
         [TestInitialize]
@@ -29,9 +31,13 @@ namespace GenealogyTree.Tests
             _mockPerson = new Mock<IPersonRepository>();
             _mockParentChild = new Mock<IParentChildRepository>();
             _mockUser = new Mock<IUserRepository>();
+            _mockRepo = new Mock<IUnitOfWork>();
             var mockLogger = new Mock<ILogger<UserGenealogyTreeController>>();
+            var mockHttp = new Mock<IHttpContextAccessor>();
+
             sut = new UserGenealogyTreeController(_mockMapper.Object, _mockRelative.Object,
-                _mockPerson.Object, _mockParentChild.Object, mockLogger.Object, _mockUser.Object);
+                _mockPerson.Object, _mockParentChild.Object, mockLogger.Object, _mockUser.Object, mockHttp.Object,
+                _mockRepo.Object);
         }
 
         [TestMethod]

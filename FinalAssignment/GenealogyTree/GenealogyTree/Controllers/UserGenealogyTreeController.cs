@@ -23,12 +23,16 @@ namespace GenealogyTree.Controllers
         private readonly ILogger<UserGenealogyTreeController> _logger;
         private readonly IUserRepository _userRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUnitOfWork _repo;
 
-        public UserGenealogyTreeController(IMapper mapper, IRelativeService relativeService
-            , IPersonRepository personRepo, IParentChildRepository parentChildRepo,
+        public UserGenealogyTreeController(IMapper mapper,
+            IRelativeService relativeService,
+            IPersonRepository personRepo,
+            IParentChildRepository parentChildRepo,
             ILogger<UserGenealogyTreeController> logger,
             IUserRepository userRepo,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IUnitOfWork repo)
         {
             _mapper = mapper;
             _relativeService = relativeService;
@@ -37,6 +41,7 @@ namespace GenealogyTree.Controllers
             _logger = logger;
             _userRepo = userRepo;
             _httpContextAccessor = httpContextAccessor;
+            _repo = repo;
         }
 
         /// <summary>
@@ -276,6 +281,43 @@ namespace GenealogyTree.Controllers
             await _personRepo.UpdateAsync(person);
             _logger.LogInformation("Person linked to the user");
             return Ok();
+        }
+
+        /// <summary>
+        /// Add new marriage
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("/api/user/{key}/addMarriage")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> AddMarriage(int key, MarriageRequest marriageRequest)
+        {
+            if (!VerifyUser(key))
+                return Forbid();
+
+            if (marriageRequest.PersonId == marriageRequest.SpouseId)
+            {
+                var message = "Marriage cannot be between the same person!";
+                _logger.LogWarning(message);
+                return BadRequest(message);
+            }
+
+            _logger.LogInformation($"Creating marriage {JsonConvert.SerializeObject(marriageRequest)}");
+            var spouses = _mapper.Map<Marriage>((marriageRequest, key));
+            if (await _repo.Marriage.ExistAsync(s => (s.PersonId == spouses.PersonId
+            && s.SpouseId == spouses.SpouseId) || (s.PersonId == spouses.SpouseId && s.SpouseId == spouses.PersonId)))
+            {
+                var message = "Marriage already recorded!";
+                _logger.LogWarning(message);
+                return BadRequest(message);
+            }
+
+            var spousesId = await _repo.Marriage.CreateAsync(spouses);
+            _logger.LogInformation($"Created marriage with ID {spousesId}");
+            return Created("MarriagePost", new { MarriageId = spousesId });
         }
 
         private bool VerifyUser(int key)
