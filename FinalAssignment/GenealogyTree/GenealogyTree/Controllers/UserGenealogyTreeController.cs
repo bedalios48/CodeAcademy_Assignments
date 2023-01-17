@@ -18,28 +18,19 @@ namespace GenealogyTree.Controllers
     {
         private readonly IRelativeService _relativeService;
         private readonly IMapper _mapper;
-        private readonly IPersonRepository _personRepo;
-        private readonly IParentChildRepository _parentChildRepo;
         private readonly ILogger<UserGenealogyTreeController> _logger;
-        private readonly IUserRepository _userRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUnitOfWork _repo;
 
         public UserGenealogyTreeController(IMapper mapper,
             IRelativeService relativeService,
-            IPersonRepository personRepo,
-            IParentChildRepository parentChildRepo,
             ILogger<UserGenealogyTreeController> logger,
-            IUserRepository userRepo,
             IHttpContextAccessor httpContextAccessor,
             IUnitOfWork repo)
         {
             _mapper = mapper;
             _relativeService = relativeService;
-            _personRepo = personRepo;
-            _parentChildRepo = parentChildRepo;
             _logger = logger;
-            _userRepo = userRepo;
             _httpContextAccessor = httpContextAccessor;
             _repo = repo;
         }
@@ -58,7 +49,7 @@ namespace GenealogyTree.Controllers
         public async Task<IActionResult> GetCloseRelatives(int personId)
         {
             _logger.LogInformation($"Getting relative information for person ID {personId}");
-            if (!await _personRepo.ExistAsync(p => p.Id == personId))
+            if (!await _repo.Person.ExistAsync(p => p.Id == personId))
             {
                 _logger.LogWarning("Person does not exist!");
                 return BadRequest("Person does not exist!");
@@ -93,7 +84,7 @@ namespace GenealogyTree.Controllers
                 return Forbid();
 
             _logger.LogInformation($"Getting person assigned to user ID {key}");
-            var person = await _personRepo.GetAsync(p => p.UserId == key);
+            var person = await _repo.Person.GetAsync(p => p.UserId == key);
             if (person is null)
             {
                 _logger.LogWarning("Person not found!");
@@ -119,7 +110,7 @@ namespace GenealogyTree.Controllers
         public async Task<IActionResult> GetPerson(int personId)
         {
             _logger.LogInformation($"Getting person with ID {personId}");
-            var person = await _personRepo.GetAsync(p => p.Id == personId);
+            var person = await _repo.Person.GetAsync(p => p.Id == personId);
             if (person is null)
             {
                 _logger.LogWarning("Person not found");
@@ -145,7 +136,7 @@ namespace GenealogyTree.Controllers
         public async Task<IActionResult> FindPeople([FromQuery]FindPersonRequest findPersonRequest)
         {
             _logger.LogInformation($"Looking for people with parameters {JsonConvert.SerializeObject(findPersonRequest)}");
-            var people = await _personRepo.GetAllAsync();
+            var people = await _repo.Person.GetAllAsync();
             var filteredPeople = GetFilteredPeople(people, findPersonRequest);
 
             if (filteredPeople.Count() == 0)
@@ -184,7 +175,7 @@ namespace GenealogyTree.Controllers
 
             _logger.LogInformation($"Creating person {JsonConvert.SerializeObject(createPersonRequest)}");
             var person = _mapper.Map<Person>((createPersonRequest, key));
-            if (await _personRepo.ExistAsync(p => p.Name == person.Name
+            if (await _repo.Person.ExistAsync(p => p.Name == person.Name
             && p.Surname == person.Surname
             && p.DateOfBirth == person.DateOfBirth
             && p.BirthPlace == person.BirthPlace))
@@ -193,7 +184,7 @@ namespace GenealogyTree.Controllers
                 return Conflict("Person already exists!");
             }
 
-            var personId = await _personRepo.CreateAsync(person);
+            var personId = await _repo.Person.CreateAsync(person);
             _logger.LogInformation($"Created person with ID {personId}");
             return Created("PostPerson", new { PersonId = personId });
         }
@@ -222,14 +213,14 @@ namespace GenealogyTree.Controllers
 
             _logger.LogInformation($"Creating relation {JsonConvert.SerializeObject(relativeRequest)}");
             var parentChild = _mapper.Map<ParentChild>((relativeRequest, key));
-            if (await _parentChildRepo.ExistAsync(pc => pc.ParentId == parentChild.ParentId
+            if (await _repo.ParentChild.ExistAsync(pc => pc.ParentId == parentChild.ParentId
             && pc.ChildId == parentChild.ChildId))
             {
                 _logger.LogWarning("Relation already exists!");
                 return BadRequest("Relation already exists!");
             }
 
-            var parentChildId = await _parentChildRepo.CreateAsync(parentChild);
+            var parentChildId = await _repo.ParentChild.CreateAsync(parentChild);
             _logger.LogInformation($"Created relation with ID {parentChildId}");
             return Created("RelationPost", new { RelationId = parentChildId });
         }
@@ -250,7 +241,7 @@ namespace GenealogyTree.Controllers
                 return Forbid();
 
             _logger.LogInformation($"Creating link between user ID {key} and person ID {personId}");
-            var person = await _personRepo.GetAsync(p => p.Id == personId);
+            var person = await _repo.Person.GetAsync(p => p.Id == personId);
             if(person is null)
             {
                 _logger.LogWarning("Person does not exist!");
@@ -263,14 +254,14 @@ namespace GenealogyTree.Controllers
                 return BadRequest("Person already has a user!");
             }
 
-            var user = await _userRepo.GetAsync(u => u.Id == key);
+            var user = await _repo.User.GetAsync(u => u.Id == key);
             if(user is null)
             {
                 _logger.LogWarning("User does not exist!");
                 return BadRequest("User does not exist!");
             }
 
-            var people = await _personRepo.GetAllAsync(p => p.UserId == key);
+            var people = await _repo.Person.GetAllAsync(p => p.UserId == key);
             if(people.Count() > 0)
             {
                 _logger.LogWarning("User already linked to a person!");
@@ -278,7 +269,7 @@ namespace GenealogyTree.Controllers
             }
 
             person.UserId = key;
-            await _personRepo.UpdateAsync(person);
+            await _repo.Person.UpdateAsync(person);
             _logger.LogInformation("Person linked to the user");
             return Ok();
         }
@@ -301,6 +292,14 @@ namespace GenealogyTree.Controllers
             if (marriageRequest.PersonId == marriageRequest.SpouseId)
             {
                 var message = "Marriage cannot be between the same person!";
+                _logger.LogWarning(message);
+                return BadRequest(message);
+            }
+
+            if((!await _repo.Person.ExistAsync(p => p.Id == marriageRequest.PersonId)) ||
+                (!await _repo.Person.ExistAsync(p => p.Id == marriageRequest.SpouseId)))
+            {
+                var message = "Persons do not exist!";
                 _logger.LogWarning(message);
                 return BadRequest(message);
             }
@@ -340,8 +339,8 @@ namespace GenealogyTree.Controllers
             if (!string.IsNullOrEmpty(findPerson.Surname))
                 people = people.Where(p => p.Surname == findPerson.Surname).ToList();
 
-            if (findPerson.DateOfBirth is not null)
-                people = people.Where(p => p.DateOfBirth == findPerson.DateOfBirth).ToList();
+            if (DateTime.TryParse(findPerson.DateOfBirth, out var date))
+                people = people.Where(p => p.DateOfBirth == date).ToList();
 
             if (!string.IsNullOrEmpty(findPerson.BirthPlace))
                 people = people.Where(p => p.BirthPlace == findPerson.BirthPlace).ToList();
