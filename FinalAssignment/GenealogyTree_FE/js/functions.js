@@ -95,7 +95,7 @@ const login = async (obj) => {
             localStorage.setItem("user", null);
         }
 
-        window.location = '../genealogy-tree/index.html';
+        window.location = '../user-interface/index.html';
     }
 }
 
