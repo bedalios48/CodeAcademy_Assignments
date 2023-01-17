@@ -161,13 +161,21 @@ namespace GenealogyTree.Controllers
         [HttpPost("/api/user/{key}/createPerson")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Produces(MediaTypeNames.Application.Json)]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> CreatePerson(int key, CreatePersonRequest createPersonRequest)
+        public async Task<IActionResult> CreatePerson(int key, [FromBody] CreatePersonRequest createPersonRequest)
         {
             if (!VerifyUser(key))
                 return Forbid();
+
+            if(string.IsNullOrEmpty(createPersonRequest.Name) || string.IsNullOrEmpty(createPersonRequest.Surname))
+            {
+                var message = "Name and surname are mandatory!";
+                _logger.LogWarning(message);
+                return BadRequest(message);
+            }
 
             _logger.LogInformation($"Creating person {JsonConvert.SerializeObject(createPersonRequest)}");
             var person = _mapper.Map<Person>((createPersonRequest, key));
@@ -177,7 +185,7 @@ namespace GenealogyTree.Controllers
             && p.BirthPlace == person.BirthPlace))
             {
                 _logger.LogWarning("Person already exists!");
-                return BadRequest("Person already exists!");
+                return Conflict("Person already exists!");
             }
 
             var personId = await _personRepo.CreateAsync(person);
@@ -199,6 +207,13 @@ namespace GenealogyTree.Controllers
         {
             if (!VerifyUser(key))
                 return Forbid();
+
+            if(relativeRequest.ParentId == relativeRequest.ChildId)
+            {
+                var message = "Parent and child cannot be the same person!";
+                _logger.LogWarning(message);
+                return BadRequest(message);
+            }
 
             _logger.LogInformation($"Creating relation {JsonConvert.SerializeObject(relativeRequest)}");
             var parentChild = _mapper.Map<ParentChild>((relativeRequest, key));

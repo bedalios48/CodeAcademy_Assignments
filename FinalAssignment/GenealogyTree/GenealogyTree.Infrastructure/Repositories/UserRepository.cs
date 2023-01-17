@@ -16,6 +16,9 @@ namespace GenealogyTree.Infrastructure.Repositories
         public async Task<User?> TryLoginAsync(string userName, string password)
         {
             var user = await GetAsync(u => u.UserName == userName);
+            if(user is null)
+                return null;
+
             if(_password.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return user;
 

@@ -13,18 +13,17 @@
     <div class="to-do-box">
         <div class="container">
             <h2 id="yourFamilyTree"></h2>
-            <button type="button" id="createProfile">Create your profile</button>
-            <table id="person-info"></table>
-            <div class="addRelative">
-                <button type="button" id="addParent">Add parent</button>
-                <button type="button" id="addChild">Add child</button>
+            <table id="personInfo"></table>
+            <div id="addRelative">
+                <button hidden="true" type="button" id="addParent">Add parent</button>
+                <button hidden="true" type="button" id="addChild">Add child</button>
             </div>
-            <p id="message"></p>
+            <p id="error-message"></p>
             <table id="existing-people"></table>
-            <form id="addRelativeForm">
+            <form hidden="true" id="personForm">
                 <div class="container">
                     <h1 id="header"></h1>
-                    <p id="addRelativeInfo">Please fill in this form to create a new relative.</p>
+                    <p id="personFormInfo"></p>
                     <hr>
                     <label id="name-label" for="name"><b>Name</b></label>
                     <input type="text" placeholder="Enter Name" name="name" id="name" required>
@@ -35,15 +34,13 @@
                     <label id="birthplace-label" for="birthPlace"><b>Birthplace</b></label>
                     <input type="text" placeholder="Enter Birthplace" name="birthPlace" id="birthPlace" required>
                     <hr>
-                    <p id="message"></p>
-                    <button type="submit" id="createRelativeSubmit">Create</button>
-                    <button type="submit" id="createProfileSubmit">Create</button>
+                    <button type="submit" id="createPersonSubmit">Create</button>
                 </div>
             </form>
-            <table id="family-members"></table>
-            <button type="button" id="showList">Show list</button>
-            <button type="button" id="hideList">Hide list</button>
-            <button type="button" id="log-out-button">Log out</button>
+            <table hidden="true" id="peopleTable"></table>
+            <button hidden="true" type="button" id="showList">Show list</button>
+            <button hidden="true" type="button" id="hideList">Hide list</button>
+            <button type="button" id="logOutButton">Log out</button>
         </div>
     </div>
     <script type="module" src="js/script.js"></script>
