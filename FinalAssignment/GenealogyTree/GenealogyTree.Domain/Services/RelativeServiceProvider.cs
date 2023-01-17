@@ -51,7 +51,7 @@ namespace GenealogyTree.Domain.Services
             var allChildren = new List<ParentChild>();
             foreach(var parent in parents)
             {
-                var children = await _repo.ParentChild.GetAllAsync(pc => pc.ParentId == parent.Id, include);
+                var children = await _repo.ParentChild.GetAllAsync(pc => pc.ParentId == parent.ChildId, include);
                 allChildren.AddRange(children);
             }
             return allChildren;
@@ -94,7 +94,7 @@ namespace GenealogyTree.Domain.Services
             var allParents = new List<ParentChild>();
             foreach (var child in children)
             {
-                var parents = await _repo.ParentChild.GetAllAsync(pc => pc.ChildId == child.Id, include);
+                var parents = await _repo.ParentChild.GetAllAsync(pc => pc.ChildId == child.ParentId, include);
                 allParents.AddRange(parents);
             }
             return allParents;

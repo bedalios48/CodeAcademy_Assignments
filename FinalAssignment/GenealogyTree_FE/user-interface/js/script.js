@@ -38,7 +38,6 @@ submitButton.addEventListener("click", async (e) => {
     const resultPersonId = await createPerson();
     if(addSpouse && resultPersonId !== 0)
     {
-        console.log("adding spouse")
         await addMarriage(resultPersonId);
     }
 });
@@ -90,7 +89,6 @@ hideListButton.addEventListener("click", (e) => {
 const createPerson = async () => {
     const obj = createFormObject(form);
     const result = await submitForm(obj);
-    console.log(result.data);
     if(result.status === 409)
     {
         await offerExistingPerson(result, obj);
@@ -104,7 +102,6 @@ const createPerson = async () => {
     }
     if(result.status === 201)
     {
-        console.log(result.data.personId);
         if(isUserEmpty)
         {
             await linkPerson(result.data.personId);
@@ -112,29 +109,23 @@ const createPerson = async () => {
         }
         if(addSpouse)
         {
-            console.log("add spouse");
             return result.data.personId;
         }
         await addRelation(result.data.personId);
         return result.data.personId;
     }
-    console.log(result.data);
 }
 
 const createFormObject = (f) => {
     let data = new FormData(f);
-    console.log(data);
     const obj = {};
     data.forEach((value, key) => (obj[key] = value));
-    console.log(obj);
     return obj;
 }
 
 const submitForm = async (obj) => {
     const response = await callPost(`https://localhost:7008/api/user/${userId}/createPerson`, obj);
-    console.log(response);
     const fetchData = await response.json();
-    console.log(fetchData);
     return {
         "status": response.status,
         "data": fetchData
@@ -149,11 +140,9 @@ const offerExistingPerson = async (result, obj) => {
     table.innerHTML = "<thead><tr><th>Name</th><th>Surname</th><th>Date of birth</th><th>Birth place</th></tr></thead>";
     const foundPeople = await callEndpoint(`https://localhost:7008/api/user/findPeople?` + 
     `Name=${obj.name}&Surname=${obj.surname}&DateOfBirth=${obj.dateOfBirth}&BirthPlace=${obj.birthPlace}`, 'GET');
-    console.log(foundPeople.data)
     for(let el of foundPeople.data)
     {
         let dateOfBirth = "";
-        console.log("el: "+el)
         if(el.dateOfBirth !== null)
         dateOfBirth = el.dateOfBirth.substring(0, 10);
         table.innerHTML += `<tbody>
@@ -205,7 +194,6 @@ const linkPerson = async (personId) => {
     let fetchResponse;
     try {
         fetchResponse = await fetch(`https://localhost:7008/api/user/${userId}/linkUser?personId=${personId}`, settings);
-        console.log('response.status: ', fetchResponse.status);
     } catch (e) {
         console.log(e);
     }
@@ -236,9 +224,7 @@ const addRelation = async (personId) => {
         'parentId': parentId,
         'childId': childId
     }
-    console.log(obj);
     const response = await callEndpoint(`https://localhost:7008/api/user/${userId}/createRelation`, 'POST', obj);
-    console.log(response);
     if(response.status === 201)
     {
         table.hidden = true;
@@ -303,9 +289,6 @@ const showFamily = async (personId) => {
 }
 
 const addMarriage = async (spouseId) => {
-    console.log("adding marriage")
-    console.log(isUserEmpty)
-    console.log(addSpouse)
     form.hidden = false;
     table.hidden = true;
     marriageForm.hidden = false;
@@ -323,9 +306,7 @@ const submitMarriage = async (spouseId) => {
       }
     obj.personId = person.personId;
     obj.spouseId = spouseId;
-    console.log(obj);
     const response = await callPost(`https://localhost:7008/api/user/${userId}/addMarriage`, obj);
-    console.log(response);
     const fetchData = await response.json();
     if(response.status === 400)
     {
@@ -350,7 +331,6 @@ if(user === null)
 
 if(user !== null && person !== null)
 {
-    console.log("user not null")
     await showPersoninfo();
     addChildButton.hidden = false;
     addParentButton.hidden = false;
