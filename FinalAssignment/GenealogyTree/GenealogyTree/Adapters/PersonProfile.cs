@@ -13,9 +13,11 @@ namespace GenealogyTree.Adapters
                 .ForMember(p => p.Name, opt => opt.MapFrom(c => c.createPerson.Name))
                 .ForMember(p => p.Surname, opt => opt.MapFrom(c => c.createPerson.Surname))
                 .ForMember(p => p.BirthPlace, opt => opt.MapFrom(c => c.createPerson.BirthPlace))
-                .ForMember(p => p.DateOfBirth, opt => opt.MapFrom(c => c.createPerson.DateOfBirth));
+                .ForMember(p => p.DateOfBirth, opt => opt.MapFrom(c => GetDateOfBirth(c.createPerson.DateOfBirth)));
             CreateMap<Person, PersonResponse>()
                 .ForMember(p => p.PersonId, opt => opt.MapFrom(p => p.Id));
         }
+
+        private DateTime? GetDateOfBirth(string date) => DateTime.TryParse(date, out var parsedDate) ? parsedDate : null;
     }
 }
